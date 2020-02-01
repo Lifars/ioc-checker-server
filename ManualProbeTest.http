@@ -1,0 +1,65 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection) or
+# paste cURL into the file and request will be converted to HTTP Request format.
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+GET http://0.0.0.0:8080/
+
+
+###
+
+GET http://0.0.0.0:8080/api/probe/auth/get/ioc/24
+Content-Type: application/json
+#WWW-Authenticate: Basic realm="IOC Server Probes", charset=UTF-8
+Authorization: Basic QmFzaWMgcHJvYmUxOnByb2JlS2V5 # probe1:probeKey
+
+###
+
+POST http://0.0.0.0:8080/api/probe/auth/post/ioc/result
+Content-Type: application/json
+Authorization: Basic QmFzaWMgcHJvYmUxOnByb2JlS2V5 # probe1:probeKey
+
+{
+  "datetime": "2020-01-25T21:16:29.659226400Z",
+  "foundIocs": [
+    1
+  ],
+  "iocResults": [
+    {
+      "iocId": 1,
+      "data": [
+        "C:/Users/IEUser/Documents/Luke.txt"
+      ]
+    },
+    {
+      "iocId": 1,
+      "data": [
+        "C:/Users/IEUser/Documents/Leia.txt",
+        "85076e14bfea8bc12ee01fae12ea77f9"
+      ]
+    }
+  ],
+  "iocErrors": []
+}
+
+###
+## {"pagination":{"page":1,"perPage":10},"sort":{"field":"id","order":"ASC"},"filter":{}}
+
+GET http://0.0.0.0:8080/api/admin/list/iocs?query={"pagination":{"page":1,"perPage":50},"sort":{"field":"id","order":"DESC"},"filter":{}}
+Content-Type: application/json
+
+### Get one
+
+GET http://0.0.0.0:8080/api/admin/one/iocs/1
+Content-Type: application/json
+
+### Get many
+
+GET http://127.0.0.1:8080/api/admin/many/users?query={"ids":[1]}
+Content-Type: application/json
+
+### Post
+
