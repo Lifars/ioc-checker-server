@@ -1,5 +1,6 @@
 package com.lifars.ioc.server.payload
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.Instant
 
 object UserPayload{
@@ -15,6 +16,7 @@ object UserPayload{
         val role: Role
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class SaveUserWithPassword (
         val id: Long,
         val name: String,

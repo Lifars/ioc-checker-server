@@ -119,16 +119,45 @@ private class IocConverter {
     fun probeIocEntryRec(entry: IocEntry): IocPayload.IocEntry {
         return IocPayload.IocEntry(
             name = entry.name,
-            searchType = entry.searchType.name.let { IocPayload.SearchType.valueOf(it) },
             evalPolicy = entry.evalPolicy.name.let { IocPayload.EvaluationPolicy.valueOf(it) },
             childEvalPolicy = entry.childEvalPolicy.name.let { IocPayload.EvaluationPolicy.valueOf(it) },
-            processCheck = entry.processCheck,
-            mutexCheck = entry.mutexCheck,
-            dnsCheck = entry.dnsCheck,
-            connsCheck = entry.connsCheck,
-            certsCheck = entry.certsCheck,
+            processCheck = entry.processCheck?.let { processCheck ->
+                IocPayload.ProcessInfo(
+                    data = processCheck.data,
+                    hash = processCheck.hash?.let { hashed ->
+                        IocPayload.Hashed(
+                            algorithm = hashed.algorithm.name.let { IocPayload.Hashed.Type.valueOf(it) },
+                            value = hashed.value
+                        )
+                    },
+                    search = processCheck.search.name.let { IocPayload.SearchType.valueOf(it) }
+                )
+            },
+            mutexCheck = entry.mutexCheck?.let { mutexCheck ->
+                IocPayload.MutexInfo(
+                    data = mutexCheck.data
+                )
+            },
+            dnsCheck = entry.dnsCheck?.let { dnsCheck ->
+                IocPayload.DnsInfo(
+                    data = dnsCheck.data
+                )
+            },
+            connsCheck = entry.connsCheck?.let { connsCheck ->
+                IocPayload.ConnsInfo(
+                    data = connsCheck.data,
+                    search = connsCheck.search.name.let { IocPayload.ConnSearchType.valueOf(it) }
+                )
+            },
+            certsCheck = entry.certsCheck?.let { certCheck ->
+                IocPayload.CertsInfo(
+                    data = certCheck.data,
+                    search = certCheck.search.name.let { IocPayload.CertSearchType.valueOf(it) }
+                )
+            },
             fileCheck = entry.fileCheck?.let { fileCheck ->
                 IocPayload.FileInfo(
+                    search = fileCheck.search.name.let { IocPayload.SearchType.valueOf(it) },
                     name = fileCheck.name,
                     hash = fileCheck.hash?.let { hashed ->
                         IocPayload.Hashed(
@@ -142,7 +171,8 @@ private class IocConverter {
                 IocPayload.RegistryInfo(
                     key = registryCheck.key,
                     value = registryCheck.value,
-                    valueName = registryCheck.valueName
+                    valueName = registryCheck.valueName,
+                    search = registryCheck.search.name.let { IocPayload.SearchType.valueOf(it) }
                 )
             },
             offspring = if (entry.offspring?.isEmpty() != false) emptyList() else entry.offspring.map {
@@ -154,16 +184,45 @@ private class IocConverter {
     fun iocEntryToPayloadRec(entry: IocPayload.IocEntry): IocEntry {
         return IocEntry(
             name = entry.name,
-            searchType = entry.searchType.name.let { IocEntry.SearchType.valueOf(it) },
             evalPolicy = entry.evalPolicy.name.let { IocEntry.EvaluationPolicy.valueOf(it) },
             childEvalPolicy = entry.childEvalPolicy.name.let { IocEntry.EvaluationPolicy.valueOf(it) },
-            processCheck = entry.processCheck,
-            mutexCheck = entry.mutexCheck,
-            dnsCheck = entry.dnsCheck,
-            connsCheck = entry.connsCheck,
-            certsCheck = entry.certsCheck,
+            processCheck = entry.processCheck?.let { processCheck ->
+                IocEntry.ProcessInfo(
+                    data = processCheck.data,
+                    hash = processCheck.hash?.let { hashed ->
+                        IocEntry.Hashed(
+                            algorithm = hashed.algorithm.name.let { IocEntry.Hashed.Type.valueOf(it) },
+                            value = hashed.value
+                        )
+                    },
+                    search = processCheck.search.name.let { IocEntry.SearchType.valueOf(it) }
+                )
+            },
+            mutexCheck = entry.mutexCheck?.let { mutexCheck ->
+                IocEntry.MutexInfo(
+                    data = mutexCheck.data
+                )
+            },
+            dnsCheck = entry.dnsCheck?.let { dnsCheck ->
+                IocEntry.DnsInfo(
+                    data = dnsCheck.data
+                )
+            },
+            connsCheck = entry.connsCheck?.let { connsCheck ->
+                IocEntry.ConnsInfo(
+                    data = connsCheck.data,
+                    search = connsCheck.search.name.let { IocEntry.ConnSearchType.valueOf(it) }
+                )
+            },
+            certsCheck = entry.certsCheck?.let { certCheck ->
+                IocEntry.CertsInfo(
+                    data = certCheck.data,
+                    search = certCheck.search.name.let { IocEntry.CertSearchType.valueOf(it) }
+                )
+            },
             fileCheck = entry.fileCheck?.let { fileCheck ->
                 IocEntry.FileInfo(
+                    search = fileCheck.search.name.let { IocEntry.SearchType.valueOf(it) },
                     name = fileCheck.name,
                     hash = fileCheck.hash?.let { hashed ->
                         IocEntry.Hashed(
@@ -175,6 +234,7 @@ private class IocConverter {
             },
             registryCheck = entry.registryCheck?.let { registryCheck ->
                 IocEntry.RegistryInfo(
+                    search = registryCheck.search.name.let { IocEntry.SearchType.valueOf(it) },
                     key = registryCheck.key,
                     value = registryCheck.value,
                     valueName = registryCheck.valueName

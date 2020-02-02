@@ -1,5 +1,6 @@
 package com.lifars.ioc.server.payload
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.Instant
 import java.time.LocalDate
 
@@ -32,6 +33,7 @@ object ProbePayload {
         val registeredBy: Long
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class SaveProbeWithApiKey(
         val id: Long?,
         val name: String,
