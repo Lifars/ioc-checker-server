@@ -45,7 +45,7 @@ data class IocEntry(
     )
 
     data class MutexInfo(
-        val data: List<String>
+        val data: String
     )
 
     data class ProcessInfo(
