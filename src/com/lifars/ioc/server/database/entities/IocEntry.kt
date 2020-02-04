@@ -55,7 +55,7 @@ data class IocEntry(
     )
 
     data class DnsInfo(
-        val data: List<String>
+        val name: String
     )
 
     enum class ConnSearchType {

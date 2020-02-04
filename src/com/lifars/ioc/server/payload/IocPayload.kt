@@ -119,7 +119,7 @@ object IocPayload {
     )
 
     data class DnsInfo(
-        val data: List<String>
+        val name: String
     )
 
     enum class ConnSearchType {
@@ -142,22 +142,6 @@ object IocPayload {
         val search: CertSearchType,
         val data: List<String>
     )
-
-//    data class IocEntry(
-//        @Json(index = 1) val id: Long,
-//        @Json(index = 3) val evalPolicy: EvaluationPolicy,
-//        @Json(index = 4) val searchType: SearchType,
-//        @Json(index = 2) val name: String?,
-//        @Json(index = 12) val childEvalPolicy: EvaluationPolicy,
-//        @Json(index = 13) val offspring: List<IocEntry>?,
-//        @Json(index = 5) val registryCheck: RegistryInfo?,
-//        @Json(index = 6) val fileCheck: FileInfo?,
-//        @Json(index = 8) val mutexCheck: Boolean,
-//        @Json(index = 7) val processCheck: Boolean,
-//        @Json(index = 9) val dnsCheck: Boolean,
-//        @Json(index = 10) val connsCheck: Boolean,
-//        @Json(index = 11) val certsCheck: Boolean
-//    )
 
     data class Hashed(
         val algorithm: Type,

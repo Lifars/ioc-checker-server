@@ -140,7 +140,7 @@ private class IocConverter {
             },
             dnsCheck = entry.dnsCheck?.let { dnsCheck ->
                 IocPayload.DnsInfo(
-                    data = dnsCheck.data
+                    name = dnsCheck.name
                 )
             },
             connsCheck = entry.connsCheck?.let { connsCheck ->
@@ -205,7 +205,7 @@ private class IocConverter {
             },
             dnsCheck = entry.dnsCheck?.let { dnsCheck ->
                 IocEntry.DnsInfo(
-                    data = dnsCheck.data
+                    name = dnsCheck.name
                 )
             },
             connsCheck = entry.connsCheck?.let { connsCheck ->
