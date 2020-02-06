@@ -8,6 +8,7 @@ import com.lifars.ioc.server.security.PasswordHasher
 import com.lifars.ioc.server.serialization.json
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -37,65 +38,103 @@ data class DatabaseInitializer(
         logger.info { "Initializing database data." }
         database.query {
             val adminId = if (admin != null) {
-                Users.select {
-                    Users.role eq Users.Role.ADMIN
-                }.limit(1)
-                    .firstOrNull()
-                    ?.let { it[Users.id] }
-                    ?.let { existingAdminId ->
-                        Users.deleteWhere { Users.id eq existingAdminId }
-                    }
-
-                Users.insertAndGetId { row ->
-                    row[role] = Users.Role.ADMIN
-                    row[company] = ""
-                    row[email] = admin.email
-                    row[name] = admin.email.substringBefore("@")
-                    row[username] = admin.email.substringBefore("@")
-                    row[password] = userPasswordHasher.hash(admin.passwordPlain)
-                }
+                createAdmin(admin)
             } else {
                 Users.select {
                     Users.role eq Users.Role.ADMIN
                 }.limit(1).firstOrNull()?.let { it[Users.id] } ?: throw AdminNotSetException()
             }
             logger.debug { "New admin with id $adminId created." }
-
             probe?.let {
-                Probes.insertAndGetId { row ->
-                    row[name] = probe.name
-                    row[apiKey] = probePasswordHasher.hash(probe.apiKey)
-                    row[owner] = adminId
-                    row[registeredBy] = adminId
-                }.let { logger.debug { "New probe with id ${it.value} created for user with id $adminId" } }
+                createProbeForAdmin(probe, adminId)
+            }
+            if (testIoc) {
+                createDummyIoc()
+            }
+        }
+    }
+
+    private fun createDummyIoc() {
+        Iocs.insert { row ->
+            row[name] = "StarWars"
+            row[definition] = IocEntry(
+                name = "DarthVader",
+                offspring = listOf(
+                    IocEntry(
+                        name = "LukeSkywalker",
+                        fileCheck = IocEntry.FileInfo(
+                            name = "C:/Users/IEUser/Documents/Luke.txt"
+                        )
+                    ),
+                    IocEntry(
+                        name = "LeiaOrgana",
+                        fileCheck = IocEntry.FileInfo(
+                            name = "C:/Users/IEUser/Documents/Leia.txt",
+                            hash = IocEntry.Hashed(
+                                algorithm = IocEntry.Hashed.Type.MD5,
+                                value = "85076E14BFEA8BC12EE01FAE12EA77F9"
+                            )
+                        )//,
+//                        offspring = listOf(
+//                            IocEntry(
+//                                name = "BenSolo",
+//                                fileCheck = IocEntry.FileInfo(
+//                                    name = ".*\\.*\\\\Ben\\.txt",
+//                                    search = IocEntry.SearchType.REGEX
+//                                )
+//                            )
+//                        )
+                    )
+                )
+            ).json()
+        }
+        Iocs.insert { row ->
+            row[name] = "StarTrek"
+            row[definition] = IocEntry(
+                name = "CaptainPicard",
+                dnsCheck = IocEntry.DnsInfo(
+                    name = "teredo.ipv6.microsoft.com" // ModernIE Windows 7 has such dns entry
+                ),
+                registryCheck = IocEntry.RegistryInfo(
+                    key = "HKEY_CURRENT_USER\\AppEvents\\EventLabels\\ActivatingDocument",
+                    valueName = "DispFileName",
+                    value = "@ieframe.dll,-10321"
+                )
+            ).json()
+        }
+    }
+
+    private fun createProbeForAdmin(
+        probe: InitProbe,
+        adminId: EntityID<Long>
+    ) {
+        Probes.insertAndGetId { row ->
+            row[name] = probe.name
+            row[apiKey] = probePasswordHasher.hash(probe.apiKey)
+            row[owner] = adminId
+            row[registeredBy] = adminId
+        }.let {
+            logger.debug { "New probe with id ${it.value} created for user with id $adminId" }
+        }
+    }
+
+    private fun createAdmin(admin: InitAdmin): EntityID<Long> {
+        Users.select {
+            Users.role eq Users.Role.ADMIN
+        }.limit(1)
+            .firstOrNull()
+            ?.let { it[Users.id] }
+            ?.let { existingAdminId ->
+                Users.deleteWhere { Users.id eq existingAdminId }
             }
 
-            if(testIoc){
-                Iocs.insert {row ->
-                    row[name] = "StarWars"
-                    row[definition] = IocEntry(
-                        name = "DarthVader",
-                        offspring = listOf(
-                            IocEntry(
-                                name = "LukeSkywalker",
-                                fileCheck = IocEntry.FileInfo(
-                                    name = "C:/Users/IEUser/Documents/Luke.txt"
-                                )
-                            ),
-                            IocEntry(
-                                name = "LeiaOrgana",
-                                fileCheck = IocEntry.FileInfo(
-                                    name = "C:/Users/IEUser/Documents/Leia.txt",
-                                    hash = IocEntry.Hashed(
-                                        algorithm = IocEntry.Hashed.Type.MD5,
-                                        value = "85076E14BFEA8BC12EE01FAE12EA77F9"
-                                    )
-                                )
-                            )
-                        )
-                    ).json()
-                }
-            }
+        return Users.insertAndGetId { row ->
+            row[role] = Users.Role.ADMIN
+            row[company] = ""
+            row[email] = admin.email
+            row[name] = admin.email.substringBefore("@")
+            row[username] = admin.email.substringBefore("@")
+            row[password] = userPasswordHasher.hash(admin.passwordPlain)
         }
     }
 
