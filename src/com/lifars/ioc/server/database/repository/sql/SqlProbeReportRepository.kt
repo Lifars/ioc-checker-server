@@ -74,7 +74,6 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
             val errors = entity.iocErrors
             IocSearchErrors.batchInsert(errors) { searchError ->
                 this[IocSearchErrors.probeReportId] = createdIdWrapped
-                this[IocSearchErrors.iocId] = searchError.iocId?.let { EntityID(searchError.iocId, Iocs) }
                 this[IocSearchErrors.kind] = searchError.kind
                 this[IocSearchErrors.message] = searchError.message
             }

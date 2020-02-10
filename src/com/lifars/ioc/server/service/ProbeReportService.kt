@@ -35,7 +35,6 @@ class ProbeReportService(
     )
 
     private fun IocSearchError.toDto() = ProbeReportPayload.IocSearchError(
-        iocId = iocId,
         kind = kind,
         message = message
     )
@@ -47,7 +46,6 @@ class ProbeReportService(
     )
 
     private fun ProbeReportPayload.IocSearchError.toEntity(probeReportId: Long) = IocSearchError(
-        iocId = iocId,
         kind = kind,
         message = message,
         probeReportId = probeReportId
@@ -96,7 +94,6 @@ class ProbeReportService(
             },
             iocErrors = request.iocErrors.map { iocError ->
                 IocSearchError(
-                    iocId = iocError.iocId,
                     probeReportId = 0,
                     message = iocError.message,
                     kind = iocError.kind

@@ -99,6 +99,17 @@ data class DatabaseInitializer(
                     key = "HKEY_CURRENT_USER\\AppEvents\\EventLabels\\ActivatingDocument",
                     valueName = "DispFileName",
                     value = "@ieframe.dll,-10321"
+                ),
+                certsCheck = IocEntry.CertsInfo(
+                    name = "VeriSign"
+                ),
+                connsCheck = IocEntry.ConnsInfo(
+                    search = IocEntry.SearchType.REGEX,
+                    name = "\\.com"
+                ),
+                processCheck = IocEntry.ProcessInfo(
+                    IocEntry.SearchType.EXACT,
+                    name = "svchost.exe"
                 )
             ).json()
         }

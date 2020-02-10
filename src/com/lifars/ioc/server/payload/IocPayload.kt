@@ -40,14 +40,6 @@ object IocPayload {
         val definition: IocEntry
     )
 
-//    data class Ioc(
-//        @Json(index = 1) val id: Long,
-//        @Json(index = 2) val name: String,
-//        @Json(index = 4) val definition: IocEntry,
-//        @Json(index = 3) val created: Instant,
-//        @Json(index = 5) val updated: Instant
-//    )
-
     data class Ioc(
         val id: Long,
         val name: String,
@@ -109,38 +101,32 @@ object IocPayload {
     )
 
     data class MutexInfo(
-        val data: String
+        val name: String
     )
 
     data class ProcessInfo(
         val search: SearchType = SearchType.default,
         val hash: Hashed? = null,
-        val data: List<String>? = null
+        val name: String? = null
     )
 
     data class DnsInfo(
         val name: String
     )
 
-    enum class ConnSearchType {
-        IP,
-        EXACT,
-        REGEX;
-    }
-
     data class ConnsInfo(
-        val search: ConnSearchType,
-        val data: List<String>
+        val search: SearchType,
+        val name: String
     )
 
-    enum class CertSearchType {
-        DOMAIN,
-        ISSUER
-    }
+//    enum class CertSearchType {
+//        DOMAIN,
+//        ISSUER
+//    }
 
     data class CertsInfo(
-        val search: CertSearchType,
-        val data: List<String>
+//        val search: CertSearchType,
+        val name: String
     )
 
     data class Hashed(

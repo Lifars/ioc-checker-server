@@ -35,7 +35,6 @@ object ProbeReportPayload {
     )
 
     data class IocSearchError(
-        val iocId: Long?,
         val kind: String,
         val message: String
     )
