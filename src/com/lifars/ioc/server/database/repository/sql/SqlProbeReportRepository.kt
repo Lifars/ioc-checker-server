@@ -3,8 +3,8 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.ProbeReport
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.*
-import com.lifars.ioc.server.database.tables.auxiliary.FoundIocs
+import com.lifars.ioc.server.database.tables.sql.*
+import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
@@ -40,7 +40,9 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
     ): Page<ProbeReport> = database.query {
         (table innerJoin IocSearchResults).select {
             (table.probeId eq EntityID(probeId, Probes)) and
-                    (IocSearchResults.iocId eq EntityID(iocId, Iocs)) andMaybe
+                    (IocSearchResults.iocId eq EntityID(iocId,
+                        Iocs
+                    )) andMaybe
                     (table.updated maybeBetween timeInterval)
         }.mapPaged(pagination)
     }
@@ -51,7 +53,9 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
         pagination: Pagination
     ): Page<ProbeReport> = database.query {
         (table innerJoin IocSearchResults).select {
-            (IocSearchResults.iocId eq EntityID(iocId, Iocs)) andMaybe
+            (IocSearchResults.iocId eq EntityID(iocId,
+                Iocs
+            )) andMaybe
                     (table.updated maybeBetween timeInterval)
         }.mapPaged(pagination)
     }
@@ -63,12 +67,16 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
     override suspend fun create(entity: ProbeReport): Long {
         val createdId = super.create(entity)
         val results = entity.iocResults
-        val createdIdWrapped = EntityID(createdId, ProbeReports)
+        val createdIdWrapped = EntityID(createdId,
+            ProbeReports
+        )
         database.query {
             IocSearchResults.batchInsert(results) { searchResult ->
                 this[IocSearchResults.probeReportId] = createdIdWrapped
                 this[IocSearchResults.data] = searchResult.data.joinToString("\n")
-                this[IocSearchResults.iocId] = EntityID(searchResult.iocId, Iocs)
+                this[IocSearchResults.iocId] = EntityID(searchResult.iocId,
+                    Iocs
+                )
             }
 
             val errors = entity.iocErrors
@@ -79,7 +87,9 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
             }
 
             FoundIocs.batchInsert(entity.foundIocs) { foundIocId ->
-                this[FoundIocs.ioc] = EntityID(foundIocId, Iocs)
+                this[FoundIocs.ioc] = EntityID(foundIocId,
+                    Iocs
+                )
                 this[FoundIocs.probeReport] = createdIdWrapped
             }
         }
@@ -101,7 +111,9 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
         row: UpdateBuilder<Number>,
         entity: ProbeReport
     ) {
-        row[probeId] = EntityID(entity.probeId, ProbeReports)
+        row[probeId] = EntityID(entity.probeId,
+            ProbeReports
+        )
         row[probeTimestamp] = entity.probeTimestamp
     }
 }

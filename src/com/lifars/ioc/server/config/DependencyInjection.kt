@@ -2,14 +2,22 @@ package com.lifars.ioc.server.config
 
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.repository.*
+import com.lifars.ioc.server.database.repository.keyvalue.KeyValueVisitedFeedUrlRepository
 import com.lifars.ioc.server.database.repository.sql.*
+import com.lifars.ioc.server.database.tables.keyvalue.VisitedFeeds
 import com.lifars.ioc.server.security.JwtProvider
 import com.lifars.ioc.server.security.PasswordHasher
+import com.lifars.ioc.server.serialization.additionalSetup
 import com.lifars.ioc.server.service.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
 import io.ktor.config.ApplicationConfig
 import io.ktor.util.KtorExperimentalAPI
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import java.io.File
 import java.time.Duration
 
 val probeQualifier = named("probeQualifier")
@@ -22,7 +30,20 @@ val userRealm = named("userRealm")
 fun mainDiModule(
     applicationConfig: ApplicationConfig
 ) = module {
+
+    factory {
+        HttpClient(CIO) {
+            install(JsonFeature) {
+                serializer = JacksonSerializer {
+                    additionalSetup()
+                }
+            }
+        }
+    }
+
     single { Database(applicationConfig) }
+
+    single { VisitedFeeds(applicationConfig.property("feed.storage").getString().let { File(it) }) }
 
     single(probeQualifier) { PasswordHasher(applicationConfig.property("auth.probe.pepper").getString()) }
 
@@ -52,6 +73,10 @@ fun mainDiModule(
 
     single<ProbeOkResultRepository> { SqlProbeOkResultRepository(get()) }
 
+    single<FeedSourceRepository> { SqlFeedSourceRepository(get()) }
+
+    single { KeyValueVisitedFeedUrlRepository(get()) }
+
     single<ProbeReportRepository> {
         SqlProbeReportRepository(
             database = get(),
@@ -63,14 +88,14 @@ fun mainDiModule(
 
     single {
         ProbeReportService(
-            probeReportRepository = get(),
+            repository = get(),
             probeRepository = get()
         )
     }
 
     single {
         IocService(
-            iocRepository = get()
+            repository = get()
         )
     }
 
@@ -84,7 +109,7 @@ fun mainDiModule(
 
     single {
         ProbeService(
-            probeRepository = get(),
+            repository = get(),
             passwordHasher = get(probeQualifier),
             userRepository = get()
         )
@@ -92,8 +117,23 @@ fun mainDiModule(
 
     single {
         UserService(
-            userRepository = get(),
+            repository = get(),
             passwordHasher = get(userQualifier)
+        )
+    }
+
+    single {
+        FeedSourceService(
+            repository = get()
+        )
+    }
+
+    single {
+        FeedService(
+            feedSourceRepository = get(),
+            iocRepository = get(),
+            visitedFeedUrls = get(),
+            httpClientFactory = { get() }
         )
     }
 }

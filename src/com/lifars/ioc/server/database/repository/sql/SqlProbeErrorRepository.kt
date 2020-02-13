@@ -3,14 +3,12 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.IocSearchError
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.IocSearchErrors
-import com.lifars.ioc.server.database.tables.Iocs
-import com.lifars.ioc.server.database.tables.ProbeReports
-import com.lifars.ioc.server.database.tables.Probes
+import com.lifars.ioc.server.database.tables.sql.IocSearchErrors
+import com.lifars.ioc.server.database.tables.sql.ProbeReports
+import com.lifars.ioc.server.database.tables.sql.Probes
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
@@ -24,7 +22,9 @@ class SqlProbeErrorRepository @KtorExperimentalAPI constructor(override val data
         val query = (table innerJoin ProbeReports)
             .slice(table.columns)
             .select {
-                ProbeReports.probeId eq EntityID(probeId, Probes)
+                ProbeReports.probeId eq EntityID(probeId,
+                    Probes
+                )
             }
         query.limit(pagination)
             .map { it.toEntity() }
@@ -37,7 +37,9 @@ class SqlProbeErrorRepository @KtorExperimentalAPI constructor(override val data
     override suspend fun ResultRow.toEntity() = toIocSearchError()
 
     override fun IocSearchErrors.setFields(row: UpdateBuilder<Number>, entity: IocSearchError) {
-        row[probeReportId] = EntityID(entity.probeReportId, Probes)
+        row[probeReportId] = EntityID(entity.probeReportId,
+            Probes
+        )
         row[kind] = entity.kind
         row[message] = entity.message
     }

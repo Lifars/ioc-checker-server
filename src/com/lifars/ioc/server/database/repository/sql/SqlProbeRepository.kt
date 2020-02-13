@@ -4,8 +4,8 @@ import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.ProbeApiKey
 import com.lifars.ioc.server.database.entities.ProbeWithApiKey
 import com.lifars.ioc.server.database.repository.ProbeRepository
-import com.lifars.ioc.server.database.tables.Probes
-import com.lifars.ioc.server.database.tables.Users
+import com.lifars.ioc.server.database.tables.sql.Probes
+import com.lifars.ioc.server.database.tables.sql.Users
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
@@ -55,7 +55,9 @@ class SqlProbeRepository @KtorExperimentalAPI constructor(
         row[name] = entity.name
         row[owner] = EntityID(entity.owner, Users)
         row[apiKey] = entity.apiKey
-        row[registeredBy] = EntityID(entity.registeredBy, Users)
+        row[registeredBy] = EntityID(entity.registeredBy,
+            Users
+        )
     }
 
     override val table: Probes

@@ -2,7 +2,7 @@ package com.lifars.ioc.server.database.repository.sql
 
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.BaseTable
+import com.lifars.ioc.server.database.tables.sql.BaseTable
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 interface SqlCrdRepository<
         Entity,
         Table : BaseTable
-        > : CrdRepository<Entity> {
+        > : CrdRepository<Long, Entity> {
 
     val table: Table
     @KtorExperimentalAPI

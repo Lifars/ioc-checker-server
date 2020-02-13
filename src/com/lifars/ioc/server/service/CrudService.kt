@@ -4,7 +4,7 @@ import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.payload.Payload
 
 interface CrudService<Entity, ReadDto, SaveDto> {
-    val repository: CrudRepository<Entity>
+    val repository: CrudRepository<Long, Entity>
 
     fun Entity.toDto(): ReadDto
 

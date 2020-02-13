@@ -1,7 +1,5 @@
 package com.lifars.ioc.server.config
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.lifars.ioc.server.database.DatabaseInitializer
 import com.lifars.ioc.server.database.InitAdmin
 import com.lifars.ioc.server.database.InitProbe
@@ -9,6 +7,7 @@ import com.lifars.ioc.server.exceptions.AuthenticationException
 import com.lifars.ioc.server.exceptions.AuthorizationException
 import com.lifars.ioc.server.exceptions.UserAlreadyExistsException
 import com.lifars.ioc.server.exceptions.UserNotFoundException
+import com.lifars.ioc.server.serialization.additionalSetup
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -48,7 +47,7 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
         header("Content-Range")
         header(HttpHeaders.AccessControlAllowOrigin)
 //        allowSameOrigin=true
-        allowNonSimpleContentTypes=true
+        allowNonSimpleContentTypes = true
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
@@ -84,12 +83,8 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
     }
 
     install(ContentNegotiation) {
-//        gson {
-//            registerTypeAdapter(Instant::class.java, InstantDeserializer())
-//        }
         jackson {
-            registerModule(JavaTimeModule())
-            configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            additionalSetup()
         }
     }
 
@@ -120,10 +115,11 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
 //        cookie<MySession>("SESSION")
 //    }
 
-    initAdminOrProb(parsedArgs)
+    fillDefaultDatabaseRows(parsedArgs)
+    installScheduledTasks()
 }
 
-private fun Application.initAdminOrProb(parsedArgs: CommandLineArguments) {
+private fun Application.fillDefaultDatabaseRows(parsedArgs: CommandLineArguments) {
     val initProbe = if (parsedArgs.initAdminProbeName == null) null
     else InitProbe(
         name = parsedArgs.initAdminProbeName!!,
@@ -141,6 +137,7 @@ private fun Application.initAdminOrProb(parsedArgs: CommandLineArguments) {
         userPasswordHasher = get(userQualifier),
         probe = initProbe,
         admin = initAdmin,
-        testIoc = parsedArgs.insertDummyIoc
+        testIoc = parsedArgs.insertDummyIoc,
+        registerFeedSources = parsedArgs.defaultIocFeeders
     ).initializeDatabase()
 }

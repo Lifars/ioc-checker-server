@@ -36,6 +36,9 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-client-json-jvm:$ktor_version"
+    implementation "io.ktor:ktor-client-jackson:$ktor_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "io.ktor:ktor-server-core:$ktor_version"
 //    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
@@ -60,7 +63,11 @@ dependencies {
 //    implementation 'de.mkammerer:argon2-jvm:2.6'
     implementation "commons-io:commons-io:$apache_commons_io_version"
     implementation "com.xenomachina:kotlin-argparser:$argparser_version"
-
+//    implementation "edu.uci.ics:crawler4j:$crawler4j_version"
+    implementation "org.jsoup:jsoup:$jsoup_version"
+//    implementation "org.quartz-scheduler:quartz:$quartz_version"
+//    implementation "com.github.shyiko.skedule:skedule:$skedule_version"
+    implementation "net.openhft:chronicle-map:$chroniclemap_version"
 
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 }
@@ -80,5 +87,6 @@ shadowJar {
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
+        jvmTarget = '1.8'
     }
 }

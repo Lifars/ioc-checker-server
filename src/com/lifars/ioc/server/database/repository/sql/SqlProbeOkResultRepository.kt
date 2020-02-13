@@ -3,10 +3,10 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.IocSearchResult
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.IocSearchResults
-import com.lifars.ioc.server.database.tables.Iocs
-import com.lifars.ioc.server.database.tables.ProbeReports
-import com.lifars.ioc.server.database.tables.Probes
+import com.lifars.ioc.server.database.tables.sql.IocSearchResults
+import com.lifars.ioc.server.database.tables.sql.Iocs
+import com.lifars.ioc.server.database.tables.sql.ProbeReports
+import com.lifars.ioc.server.database.tables.sql.Probes
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
@@ -37,7 +37,9 @@ class SqlProbeOkResultRepository @KtorExperimentalAPI constructor(override val d
         val query = (table innerJoin ProbeReports)
             .slice(table.columns)
             .select {
-                ProbeReports.probeId eq EntityID(probeId, Probes)
+                ProbeReports.probeId eq EntityID(probeId,
+                    Probes
+                )
             }
         query.limit(pagination)
             .map { it.toEntity() }
@@ -52,7 +54,9 @@ class SqlProbeOkResultRepository @KtorExperimentalAPI constructor(override val d
         val query = (table innerJoin ProbeReports)
             .slice(table.columns)
             .select {
-                (table.iocId eq EntityID(iocId, Iocs)) and (ProbeReports.probeId eq EntityID(probeId, Probes))
+                (table.iocId eq EntityID(iocId, Iocs)) and (ProbeReports.probeId eq EntityID(probeId,
+                    Probes
+                ))
             }
         query.limit(pagination)
             .map { it.toEntity() }
@@ -66,7 +70,9 @@ class SqlProbeOkResultRepository @KtorExperimentalAPI constructor(override val d
 
     override fun IocSearchResults.setFields(row: UpdateBuilder<Number>, entity: IocSearchResult) {
         row[iocId] = EntityID(entity.iocId, Iocs)
-        row[probeReportId] = EntityID(entity.probeReportId, ProbeReports)
+        row[probeReportId] = EntityID(entity.probeReportId,
+            ProbeReports
+        )
         row[data] = entity.data.joinToString(separator = "\n")
     }
 }

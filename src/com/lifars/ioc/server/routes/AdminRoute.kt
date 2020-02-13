@@ -6,10 +6,7 @@ import com.lifars.ioc.server.exceptions.AuthorizationException
 import com.lifars.ioc.server.payload.*
 import com.lifars.ioc.server.routes.locations.AdminLocations
 import com.lifars.ioc.server.serialization.fromJson
-import com.lifars.ioc.server.service.IocService
-import com.lifars.ioc.server.service.ProbeReportService
-import com.lifars.ioc.server.service.ProbeService
-import com.lifars.ioc.server.service.UserService
+import com.lifars.ioc.server.service.*
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.auth.authenticate
@@ -247,12 +244,10 @@ fun Route.adminProbeReport(
 fun Route.adminUser(
     service: UserService
 ) {
-
     authenticate(ADMIN_AUTH) {
         get<AdminLocations.List.User> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetList>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -276,19 +271,19 @@ fun Route.adminUser(
         }
 
         post<AdminLocations.Create.User> {
-            val request = call.receive<Payload.Request.Create<UserPayload.SaveUserWithPassword>>()
+            val request = call.receive<UserPayload.Request.Create>()
             val response = service.save(request)
             call.respond(response)
         }
 
         put<AdminLocations.Update.User> {
-            val request = call.receive<Payload.Request.Update<UserPayload.SaveUserWithPassword>>()
+            val request = call.receive<UserPayload.Request.Update>()
             val response = service.save(request)
             call.respond(response)
         }
 
         put<AdminLocations.UpdateMany.User> {
-            val request = call.receive<Payload.Request.UpdateMany<UserPayload.SaveUserWithPassword>>()
+            val request = call.receive<UserPayload.Request.UpdateMany>()
             val response = service.save(request)
             call.respond(response)
         }
@@ -300,6 +295,68 @@ fun Route.adminUser(
         }
 
         delete<AdminLocations.DeleteMany.User> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.DeleteMany>()
+            val response = service.delete(request)
+            call.respond(response)
+        }
+    }
+}
+
+@KtorExperimentalLocationsAPI
+fun Route.adminFeedSource(
+    service: FeedSourceService
+) {
+    authenticate(ADMIN_AUTH) {
+        get<AdminLocations.List.FeedSource> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.GetList>()
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        get<AdminLocations.One.FeedSource> { parameters ->
+            val request = Payload.Request.GetOne(parameters.id)
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        get<AdminLocations.Many.FeedSource> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.GetMany>()
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        get<AdminLocations.ManyReference.FeedSource> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
+            val response = service.find(request)
+//        contentRangeHeader(request.pagination, response.total)
+            call.respond(response)
+        }
+
+        post<AdminLocations.Create.FeedSource> {
+            val request = call.receive<FeedSourcePayload.Request.Create>()
+            val response = service.save(request)
+            call.respond(response)
+        }
+
+        put<AdminLocations.Update.FeedSource> {
+            val request = call.receive<FeedSourcePayload.Request.Update>()
+            val response = service.save(request)
+            call.respond(response)
+        }
+
+        put<AdminLocations.UpdateMany.FeedSource> {
+            val request = call.receive<FeedSourcePayload.Request.UpdateMany>()
+            val response = service.save(request)
+            call.respond(response)
+        }
+
+        delete<AdminLocations.Delete.FeedSource> { parameters ->
+            val request = Payload.Request.Delete(parameters.id)
+            val response = service.delete(request)
+            call.respond(response)
+        }
+
+        delete<AdminLocations.DeleteMany.FeedSource> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.DeleteMany>()
             val response = service.delete(request)
             call.respond(response)

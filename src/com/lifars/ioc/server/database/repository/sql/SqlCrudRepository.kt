@@ -1,13 +1,13 @@
 package com.lifars.ioc.server.database.repository.sql
 
 import com.lifars.ioc.server.database.repository.CrudRepository
-import com.lifars.ioc.server.database.tables.BaseTable
+import com.lifars.ioc.server.database.tables.sql.BaseTable
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.update
 import java.time.Instant
 
 interface SqlCrudRepository<Entity, Table : BaseTable>
-    : CrudRepository<Entity>, SqlCrdRepository<Entity, Table> {
+    : CrudRepository<Long, Entity>, SqlCrdRepository<Entity, Table> {
 
     @KtorExperimentalAPI
     override suspend fun updateMany(entity: Entity, entityIds: Iterable<Long>): Unit = database.query {

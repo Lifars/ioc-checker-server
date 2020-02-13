@@ -3,7 +3,7 @@ package com.lifars.ioc.server.database.repository
 import com.lifars.ioc.server.database.entities.ProbeReport
 import java.time.Instant
 
-interface ProbeReportRepository : CrudRepository<ProbeReport> {
+interface ProbeReportRepository : CrudRepository<Long, ProbeReport> {
     suspend fun findByIoc(
         iocId: Long,
         timeInterval: Interval<Instant>? = null,

@@ -8,12 +8,9 @@ import com.lifars.ioc.server.security.PasswordHasher
 import java.time.Instant
 
 class UserService(
-    private val userRepository: UserRepository,
+    override val repository: UserRepository,
     private val passwordHasher: PasswordHasher
 ) : CrudService<UserWithPassword, UserPayload.User, UserPayload.SaveUserWithPassword> {
-
-    override val repository: CrudRepository<UserWithPassword>
-        get() = userRepository
 
     override fun UserWithPassword.toDto() = UserPayload.User(
         id = id,
@@ -27,7 +24,7 @@ class UserService(
         email = email
     )
 
-    override fun UserWithPassword.toSavedDto() = UserPayload.SaveUserWithPassword (
+    override fun UserWithPassword.toSavedDto() = UserPayload.SaveUserWithPassword(
         id = id,
         expires = expires,
         name = name,
@@ -38,7 +35,7 @@ class UserService(
         passwordPlain = "PASSWORD_PLACEHOLDER"
     )
 
-    override fun UserPayload.SaveUserWithPassword.toSaveEntity() = UserWithPassword (
+    override fun UserPayload.SaveUserWithPassword.toSaveEntity() = UserWithPassword(
         id = id,
         expires = expires,
         name = name,

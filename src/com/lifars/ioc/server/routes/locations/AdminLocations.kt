@@ -16,6 +16,8 @@ class AdminLocations {
         data class ProbeReport(val query: String)
         @Location("/users")
         data class User(val query: String)
+        @Location("/feed_sources")
+        data class FeedSource(val query: String)
     }
 
     @Location("/one")
@@ -28,6 +30,8 @@ class AdminLocations {
         data class ProbeReport(val id: Long)
         @Location("/users/{id}")
         data class User(val id: Long)
+        @Location("/feed_sources/{id}")
+        data class FeedSource(val id: Long)
     }
 
     @Location("/many")
@@ -40,6 +44,8 @@ class AdminLocations {
         data class ProbeReport(val query: String)
         @Location("/users")
         data class User(val query: String)
+        @Location("/feed_sources")
+        data class FeedSource(val query: String)
     }
 
     @Location("/many_reference")
@@ -52,6 +58,8 @@ class AdminLocations {
         data class ProbeReport(val query: String)
         @Location("/users")
         data class User(val query: String)
+        @Location("/feed_sources")
+        data class FeedSource(val query: String)
     }
 
     @Location("/create")
@@ -64,6 +72,8 @@ class AdminLocations {
         class ProbeReport
         @Location("/users")
         class User
+        @Location("/feed_sources")
+        class FeedSource
     }
 
     @Location("/update")
@@ -76,6 +86,8 @@ class AdminLocations {
         class ProbeReport
         @Location("/users")
         class User
+        @Location("/feed_sources")
+        class FeedSource
     }
 
     @Location("/update-many")
@@ -88,6 +100,8 @@ class AdminLocations {
         class ProbeReport
         @Location("/users")
         class User
+        @Location("/feed_sources")
+        class FeedSource
     }
 
     @Location("/delete")
@@ -100,6 +114,8 @@ class AdminLocations {
         data class ProbeReport(val id: Long)
         @Location("/users/{id}")
         data class User(val id: Long)
+        @Location("/feed_sources/{id}")
+        data class FeedSource(val id: Long)
     }
 
     @Location("/delete_many")
@@ -112,5 +128,7 @@ class AdminLocations {
         data class ProbeReport(val query: String)
         @Location("/users")
         data class User(val query: String)
+        @Location("/feed_sources")
+        data class FeedSource(val query: String)
     }
 }

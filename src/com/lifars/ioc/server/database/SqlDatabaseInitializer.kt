@@ -1,18 +1,16 @@
 package com.lifars.ioc.server.database
 
 import com.lifars.ioc.server.database.entities.IocEntry
-import com.lifars.ioc.server.database.tables.Iocs
-import com.lifars.ioc.server.database.tables.Probes
-import com.lifars.ioc.server.database.tables.Users
+import com.lifars.ioc.server.database.tables.sql.FeedSources
+import com.lifars.ioc.server.database.tables.sql.Iocs
+import com.lifars.ioc.server.database.tables.sql.Probes
+import com.lifars.ioc.server.database.tables.sql.Users
 import com.lifars.ioc.server.security.PasswordHasher
 import com.lifars.ioc.server.serialization.json
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 
 private val logger = KotlinLogging.logger { }
 
@@ -32,7 +30,8 @@ data class DatabaseInitializer(
     private val probePasswordHasher: PasswordHasher,
     private val admin: InitAdmin?,
     private val probe: InitProbe?,
-    private val testIoc: Boolean
+    private val testIoc: Boolean,
+    private val registerFeedSources: Boolean
 ) {
     fun initializeDatabase() = runBlocking {
         logger.info { "Initializing database data." }
@@ -51,6 +50,21 @@ data class DatabaseInitializer(
             if (testIoc) {
                 createDummyIoc()
             }
+            if(registerFeedSources){
+                createDefaultFeedSources()
+            }
+        }
+    }
+
+    private fun createDefaultFeedSources() {
+        listOf(
+//            "https://www.circl.lu/doc/misp/feed-osint/",
+            "https://www.botvrij.eu/data/feed-osint/?C=M;O=D"
+        ).let { feedSources->
+            FeedSources.batchInsert(feedSources) { source ->
+                this[FeedSources.url] = source
+                this[FeedSources.type] = FeedSources.FeedType.MISP
+            }
         }
     }
 
@@ -63,27 +77,18 @@ data class DatabaseInitializer(
                     IocEntry(
                         name = "LukeSkywalker",
                         fileCheck = IocEntry.FileInfo(
-                            name = "C:/Users/IEUser/Documents/Luke.txt"
+                            name = "%UserProfile%/Documents/Luke.txt"
                         )
                     ),
                     IocEntry(
                         name = "LeiaOrgana",
                         fileCheck = IocEntry.FileInfo(
-                            name = "C:/Users/IEUser/Documents/Leia.txt",
+                            name = "%UserProfile%/Documents/Leia.txt",
                             hash = IocEntry.Hashed(
                                 algorithm = IocEntry.Hashed.Type.MD5,
                                 value = "85076E14BFEA8BC12EE01FAE12EA77F9"
                             )
-                        )//,
-//                        offspring = listOf(
-//                            IocEntry(
-//                                name = "BenSolo",
-//                                fileCheck = IocEntry.FileInfo(
-//                                    name = ".*\\.*\\\\Ben\\.txt",
-//                                    search = IocEntry.SearchType.REGEX
-//                                )
-//                            )
-//                        )
+                        )
                     )
                 )
             ).json()

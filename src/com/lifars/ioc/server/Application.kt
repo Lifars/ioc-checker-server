@@ -68,6 +68,10 @@ fun Application.module(testing: Boolean = false) {
             service = get()
         )
 
+        adminFeedSource(
+            service = get()
+        )
+
         get("/") {
             call.respondText("Lifars IOC Server, version ${Ioc::class.java.`package`.implementationVersion
                 ?: "NA"}", contentType = ContentType.Text.Plain)

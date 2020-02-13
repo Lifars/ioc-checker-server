@@ -2,17 +2,15 @@ package com.lifars.ioc.server.service
 
 import com.lifars.ioc.server.database.entities.Ioc
 import com.lifars.ioc.server.database.entities.IocEntry
-import com.lifars.ioc.server.database.repository.CrudRepository
 import com.lifars.ioc.server.database.repository.IocRepository
 import com.lifars.ioc.server.payload.IocPayload
 import java.time.Duration
 import java.time.Instant
 
 class IocService(
-    private val iocRepository: IocRepository
+    override val repository: IocRepository
 ) : CrudService<Ioc, IocPayload.Ioc, IocPayload.SaveIoc> {
 
-    override val repository: CrudRepository<Ioc> get() = iocRepository
 
     private val iocConverter = IocConverter()
 
@@ -38,7 +36,7 @@ class IocService(
 
     suspend fun latestIocs(hours: Int): IocPayload.Response.LatestIocs {
         val iocConverter = IocConverter()
-        val iocs = iocRepository.findNewerThan(
+        val iocs = repository.findNewerThan(
             instant = Instant.now() - Duration.ofHours(hours.toLong())
         ).map { it.toProbeResponseIoc(iocConverter) }
         return IocPayload.Response.LatestIocs(
@@ -48,47 +46,6 @@ class IocService(
     }
 
 }
-
-//class IocService(
-//    private val iocRepository: IocRepository
-//) : CrudService<Ioc, IocPayload.Ioc, IocPayload.SaveIoc> {
-//
-//    override val repository: CrudRepository<Ioc> get() = iocRepository
-//
-//    private val iocConverter = IocConverter()
-//
-//    override fun Ioc.toDto(): IocPayload.Ioc = this.toResponseIoc(iocConverter)
-//
-//   fun IocPayload.Ioc.toEntity() = Ioc(
-//        id = this.id,
-//        updated = Instant.now(),
-//        created = Instant.now(),
-//        name = this.name,
-//        definition = iocConverter.iocEntryToPayloadRec(this.definition)
-//    )
-//
-//    override fun Ioc.toSavedDto() = toSaveResponseIoc(iocConverter)
-//
-//    override fun IocPayload.SaveIoc.toSaveEntity() = Ioc(
-//        id = this.id,
-//        updated = Instant.now(),
-//        created = Instant.now(),
-//        name = this.name,
-//        definition = iocConverter.iocEntryToPayloadRec(this.definition)
-//    )
-//
-//    suspend fun latestIocs(hours: Int): IocPayload.Response.LatestIocs {
-//        val iocConverter = IocConverter()
-//        val iocs = iocRepository.findNewerThan(
-//            instant = Instant.now() - Duration.ofHours(hours.toLong())
-//        ).map { it.toProbeResponseIoc(iocConverter) }
-//        return IocPayload.Response.LatestIocs(
-//            releaseDatetime = Instant.now(),
-//            iocs = iocs
-//        )
-//    }
-//
-//}
 
 private fun Ioc.toProbeResponseIoc(iocEntryConverter: IocConverter) = IocPayload.IocForProbe(
     id = this.id,

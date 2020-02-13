@@ -12,11 +12,8 @@ import java.time.Instant
 
 class ProbeReportService(
     private val probeRepository: ProbeRepository,
-    private val probeReportRepository: ProbeReportRepository
+    override val repository: ProbeReportRepository
 ) : CrudService<ProbeReport, ProbeReportPayload.ProbeReport, ProbeReportPayload.SaveProbeReport> {
-
-    override val repository: CrudRepository<ProbeReport>
-        get() = probeReportRepository
 
     override fun ProbeReport.toDto() = ProbeReportPayload.ProbeReport(
         id = this.id,
@@ -101,7 +98,7 @@ class ProbeReportService(
             },
             foundIocs = request.foundIocs
         )
-        probeReportRepository.create(probeReport)
+        repository.create(probeReport)
     }
 
 }

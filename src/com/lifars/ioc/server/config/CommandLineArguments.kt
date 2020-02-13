@@ -27,6 +27,11 @@ class CommandLineArguments(parser: ArgParser) {
         "--dummy-ioc",
         help = "Insert dummy IOC"
     )
+
+    val defaultIocFeeders by parser.flagging(
+        "--default-feed-sources",
+        help = "Insert default IOC feed sources."
+    )
 }
 
 private val argParserIgnore = listOf(

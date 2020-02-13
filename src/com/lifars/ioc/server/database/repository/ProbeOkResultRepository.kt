@@ -2,7 +2,7 @@ package com.lifars.ioc.server.database.repository
 
 import com.lifars.ioc.server.database.entities.IocSearchResult
 
-interface ProbeOkResultRepository : CrdRepository<IocSearchResult> {
+interface ProbeOkResultRepository : CrdRepository<Long, IocSearchResult> {
     suspend fun findByIocReport(
         iocId: Long,
         pagination: Pagination = Pagination.default

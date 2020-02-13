@@ -1,12 +1,12 @@
 package com.lifars.ioc.server.database.repository
 
-interface CrudRepository<Entity>: CrdRepository<Entity> {
-    suspend fun update(entity: Entity, entityId: Long)
+interface CrudRepository<Id, Entity>: CrdRepository<Id,  Entity> {
+    suspend fun update(entity: Entity, entityId: Id)
 
-    suspend fun updateMany(entity: Entity, entityIds: Iterable<Long>)
+    suspend fun updateMany(entity: Entity, entityIds: Iterable<Id>)
 
-    override suspend fun save(entity: Entity, entityId: Long?): Entity =
-        if (entityId != null && entityId > 0) {
+    override suspend fun save(entity: Entity, entityId: Id?): Entity =
+        if (entityId != null) {
             update(entity, entityId)
             findById(entityId)!!
         } else {

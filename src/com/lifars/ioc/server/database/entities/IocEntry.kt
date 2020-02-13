@@ -40,7 +40,7 @@ data class IocEntry(
 
     data class FileInfo(
         val search: SearchType = SearchType.default,
-        val name: String,
+        val name: String?,
         val hash: Hashed? = null
     )
 

@@ -63,3 +63,10 @@ Content-Type: application/json
 
 ### Post
 
+
+
+
+###
+GET https://www.circl.lu/doc/misp/feed-osint/5a0a9aa9-23a4-4607-b6df-41a9950d210f.json
+
+###

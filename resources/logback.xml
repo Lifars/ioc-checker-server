@@ -9,18 +9,18 @@
     <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/ktor.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
+            <level>DEBUG</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/ktor.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- each archived file, size max 10MB -->
-            <maxFileSize>10MB</maxFileSize>
+            <!-- each archived file, size max 15MB -->
+            <maxFileSize>15MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
             <totalSizeCap>20GB</totalSizeCap>
-            <!-- 60 days to keep -->
-            <maxHistory>60</maxHistory>
+            <!-- 120 days to keep -->
+            <maxHistory>120</maxHistory>
         </rollingPolicy>
 
         <encoder>
@@ -28,7 +28,7 @@
         </encoder>
     </appender>
 
-    <root level="TRACE">
+    <root level="DEBUG">
         <appender-ref ref="FILE-ROLLING"/>
     </root>
     <root level="DEBUG">
@@ -37,4 +37,6 @@
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
     <logger name="com.zaxxer.hikari.pool.HikariPool" level="INFO"/>
+    <logger name="org.apache.http" level="WARN"/>
+    <logger name="edu.uci.ics.crawler4j" level="INFO"/>
 </configuration>

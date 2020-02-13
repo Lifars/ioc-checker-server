@@ -1,9 +1,9 @@
 package com.lifars.ioc.server.database.repository
 
-interface CrdRepository<Entity> {
-    suspend fun findById(id: Long): Entity?
-    suspend fun create(entity: Entity): Long
-    suspend fun save(entity: Entity, entityId: Long? = null): Entity =
+interface CrdRepository<Id, Entity> {
+    suspend fun findById(id: Id): Entity?
+    suspend fun create(entity: Entity): Id
+    suspend fun save(entity: Entity, entityId: Id? = null): Entity =
         create(entity).let { findById(it)!! }
 
     suspend fun find(
@@ -13,7 +13,16 @@ interface CrdRepository<Entity> {
         reference: Reference? = null
     ): Page<Entity>
 
-    suspend fun findByIds(ids: Iterable<Long>): List<Entity>
-    suspend fun delete(id: Long)
-    suspend fun deleteMany(ids: Iterable<Long>)
+    suspend fun findAll(
+    ): List<Entity> =
+        find(
+            pagination = Pagination(
+                offset = 0,
+                limit = Int.MAX_VALUE
+            )
+        )
+
+    suspend fun findByIds(ids: Iterable<Id>): List<Entity>
+    suspend fun delete(id: Id)
+    suspend fun deleteMany(ids: Iterable<Id>)
 }

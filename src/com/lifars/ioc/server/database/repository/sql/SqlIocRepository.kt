@@ -3,9 +3,9 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.Ioc
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.IocSearchResults
-import com.lifars.ioc.server.database.tables.Iocs
-import com.lifars.ioc.server.database.tables.auxiliary.FoundIocs
+import com.lifars.ioc.server.database.tables.sql.IocSearchResults
+import com.lifars.ioc.server.database.tables.sql.Iocs
+import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
 import com.lifars.ioc.server.serialization.fromJson
 import com.lifars.ioc.server.serialization.json
 import io.ktor.util.KtorExperimentalAPI
@@ -25,7 +25,6 @@ class SqlIocRepository @KtorExperimentalAPI constructor(override val database: D
     override suspend fun ResultRow.toEntity(): Ioc = toIoc()
 
     override fun Iocs.setFields(row: UpdateBuilder<Number>, entity: Ioc) {
-        row[id] = EntityID(entity.id, table)
         row[name] = entity.name
         row[definition] = entity.definition.json()
     }

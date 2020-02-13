@@ -15,13 +15,10 @@ import java.time.Instant
 import java.time.ZoneOffset
 
 class ProbeService(
-    private val probeRepository: ProbeRepository,
+    override val repository: ProbeRepository,
     private val userRepository: UserRepository,
     private val passwordHasher: PasswordHasher
 ): CrudService<ProbeWithApiKey, ProbePayload.Probe, ProbePayload.SaveProbeWithApiKey> {
-
-    override val repository: CrudRepository<ProbeWithApiKey>
-        get() = probeRepository
 
     override fun ProbeWithApiKey.toDto() = ProbePayload.Probe (
         id = id,
@@ -82,7 +79,7 @@ class ProbeService(
         val apiKey = request.apiKeyPlain //UUID.randomUUID().toString()
         val apiKeyHashed = passwordHasher.hash(apiKey)
         val probeToSave = request.toSaveEntity().copy(apiKey = apiKeyHashed)
-        val savedProbe = probeRepository.save(
+        val savedProbe = repository.save(
             probeToSave
         )
         return savedProbe.toSavedDto().copy(apiKeyPlain = "This is secret")
