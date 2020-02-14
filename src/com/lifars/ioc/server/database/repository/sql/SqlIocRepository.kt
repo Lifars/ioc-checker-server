@@ -6,10 +6,7 @@ import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.tables.sql.IocSearchResults
 import com.lifars.ioc.server.database.tables.sql.Iocs
 import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
-import com.lifars.ioc.server.serialization.fromJson
-import com.lifars.ioc.server.serialization.json
 import io.ktor.util.KtorExperimentalAPI
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
@@ -26,7 +23,7 @@ class SqlIocRepository @KtorExperimentalAPI constructor(override val database: D
 
     override fun Iocs.setFields(row: UpdateBuilder<Number>, entity: Ioc) {
         row[name] = entity.name
-        row[definition] = entity.definition.json()
+        row[definition] = entity.definition
     }
 
     override suspend fun findBetween(
@@ -62,7 +59,7 @@ class SqlIocRepository @KtorExperimentalAPI constructor(override val database: D
 fun ResultRow.toIoc() = Ioc(
     id = this[Iocs.id].value,
     name = this[Iocs.name],
-    definition = this[Iocs.definition].fromJson(),
+    definition = this[Iocs.definition],
     created = this[Iocs.created],
     updated = this[Iocs.updated]
 )

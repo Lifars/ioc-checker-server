@@ -73,15 +73,18 @@ fun Application.module(testing: Boolean = false) {
         )
 
         get("/") {
-            call.respondText("Lifars IOC Server, version ${Ioc::class.java.`package`.implementationVersion
-                ?: "NA"}", contentType = ContentType.Text.Plain)
+            call.respondText(
+                "Lifars IOC Server, version ${Ioc::class.java.`package`.implementationVersion
+                    ?: "NA"}", contentType = ContentType.Text.Plain
+            )
         }
 
         authenticate(ADMIN_AUTH) {
             get("/admin") {
                 call.respondText(
                     "Lifars IOC Server, version ${Ioc::class.java.`package`.implementationVersion
-                        ?: "NA"}\n\nThis is a restricted area. If you are not logged-in admin and see this message, then this app's security sucks and the programmer should be ashamed.", contentType = ContentType.Text.Plain
+                        ?: "NA"}\n\nThis is a restricted area. If you are not logged-in admin and see this message, then this app's security sucks and the programmer should be ashamed.",
+                    contentType = ContentType.Text.Plain
                 )
             }
         }

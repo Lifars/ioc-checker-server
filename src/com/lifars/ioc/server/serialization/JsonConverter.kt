@@ -7,18 +7,24 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlin.reflect.KClass
 
-object JsonConverter {
+
+interface JsonConverter {
+    fun <T> toJson(something: T): String
+    fun <T: Any> fromJson(json: String, klass: KClass<T>): T
+}
+
+object DefaultJsonConverter : JsonConverter {
     val implementation = ObjectMapper()
         .registerKotlinModule()
         .also { it.additionalSetup() }
 
-    fun <T> toJson(something: T): String =
+    override fun <T> toJson(something: T): String =
         implementation.writeValueAsString(something)
 
     inline fun <reified T> fromJson(json: String): T =
         implementation.readValue(json, T::class.java)
 
-    fun <T: Any> fromJson(json: String, klass: KClass<T>): T =
+    override fun <T: Any> fromJson(json: String, klass: KClass<T>): T =
         implementation.readValue(json, klass.java)
 
 }
@@ -29,6 +35,6 @@ fun ObjectMapper.additionalSetup() {
     configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE, true)
 }
 
-fun <T> T.json(): String = JsonConverter.toJson(this)
+fun <T> T.json(): String = DefaultJsonConverter.toJson(this)
 
-inline fun <reified T> String.fromJson(): T = JsonConverter.fromJson(this)
+inline fun <reified T> String.fromJson(): T = DefaultJsonConverter.fromJson(this)

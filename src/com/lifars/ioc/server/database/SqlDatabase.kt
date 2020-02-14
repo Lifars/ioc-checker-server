@@ -14,11 +14,11 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.TransactionInterface
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.vendors.DatabaseDialect
 
 class Database @KtorExperimentalAPI constructor(
     config: ApplicationConfig
 ) {
-
     companion object{
         val tables = arrayOf(
             Users,

@@ -1,7 +1,7 @@
 package com.lifars.ioc.server.feed
 
 import com.lifars.ioc.server.feed.formats.Misp
-import com.lifars.ioc.server.serialization.JsonConverter.fromJson
+import com.lifars.ioc.server.serialization.DefaultJsonConverter.fromJson
 import io.ktor.client.HttpClient
 import java.util.concurrent.ConcurrentMap
 

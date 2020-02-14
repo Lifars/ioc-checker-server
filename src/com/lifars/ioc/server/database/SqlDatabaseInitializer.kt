@@ -6,7 +6,6 @@ import com.lifars.ioc.server.database.tables.sql.Iocs
 import com.lifars.ioc.server.database.tables.sql.Probes
 import com.lifars.ioc.server.database.tables.sql.Users
 import com.lifars.ioc.server.security.PasswordHasher
-import com.lifars.ioc.server.serialization.json
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jetbrains.exposed.dao.id.EntityID
@@ -91,7 +90,7 @@ data class DatabaseInitializer(
                         )
                     )
                 )
-            ).json()
+            )
         }
         Iocs.insert { row ->
             row[name] = "StarTrek"
@@ -116,7 +115,7 @@ data class DatabaseInitializer(
                     IocEntry.SearchType.EXACT,
                     name = "svchost.exe"
                 )
-            ).json()
+            )
         }
     }
 
