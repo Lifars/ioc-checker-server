@@ -51,6 +51,8 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
+//    install(ForwardedHeaderSupport)
+    install(XForwardedHeaderSupport)
 
     install(DataConversion)
 

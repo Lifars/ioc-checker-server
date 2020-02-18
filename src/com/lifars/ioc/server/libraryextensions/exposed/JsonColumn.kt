@@ -5,10 +5,11 @@ import com.lifars.ioc.server.serialization.JsonConverter
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ColumnType
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.statements.api.PreparedStatementApi
 import org.postgresql.util.PGobject
 import kotlin.reflect.KClass
 
-fun <T : Any> Table.jsonb(
+fun <T : Any> Table.json(
     name: String,
     klass: KClass<T>,
     jsonConverter: JsonConverter = DefaultJsonConverter
@@ -20,20 +21,24 @@ private class JsonColumnType<out T : Any>(
 ) : ColumnType() {
     override fun sqlType(): String = "json"
 
-//    override fun setParameter(stmt: PreparedStatementApi, index: Int, value: Any?) {
-//        val obj = PGobject()
-//        obj.type = "json"
-//        obj.value = value as String
-//        stmt[index] = obj
-//    }
+    override fun setParameter(stmt: PreparedStatementApi, index: Int, value: Any?) {
+        val obj = PGobject()
+        obj.type = "json"
+        obj.value = value as String
+        stmt[index] = obj
+    }
 
     override fun valueFromDB(value: Any): Any {
-        val json = if (value is String) {
-            value
-        } else if (value !is PGobject) {
-            return value
-        } else {
-            value.value
+        val json = when (value) {
+            is String -> {
+                value
+            }
+            !is PGobject -> {
+                return value
+            }
+            else -> {
+                value.value
+            }
         }
 
         return try {
