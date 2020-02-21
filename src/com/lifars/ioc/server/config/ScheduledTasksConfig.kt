@@ -1,7 +1,7 @@
 package com.lifars.ioc.server.config
 
-import Scheduler
-import TaskSettings
+import com.lifars.ioc.server.scheduled.Scheduler
+import com.lifars.ioc.server.scheduled.TaskSettings
 import com.lifars.ioc.server.service.FeedService
 import io.ktor.application.Application
 import io.ktor.util.KtorExperimentalAPI

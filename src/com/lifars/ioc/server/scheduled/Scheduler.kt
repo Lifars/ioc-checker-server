@@ -1,3 +1,5 @@
+package com.lifars.ioc.server.scheduled
+
 import mu.KotlinLogging
 import java.time.*
 import java.time.temporal.ChronoUnit
@@ -43,7 +45,7 @@ object Scheduler {
 //    }
 //
 //    fun schedule(
-//        settings: TaskSettings,
+//        settings: com.lifars.ioc.server.scheduled.TaskSettings,
 //        task: () -> Unit
 //    ) {
 //        val taskWrapped = Job { task() }
