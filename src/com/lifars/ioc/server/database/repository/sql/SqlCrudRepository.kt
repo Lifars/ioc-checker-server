@@ -9,7 +9,6 @@ import java.time.Instant
 interface SqlCrudRepository<Entity, Table : BaseTable>
     : CrudRepository<Long, Entity>, SqlCrdRepository<Entity, Table> {
 
-    @KtorExperimentalAPI
     override suspend fun updateMany(entity: Entity, entityIds: Iterable<Long>): Unit = database.query {
         table.update({ table.id inList entityIds }) { row ->
             setFields(row, entity)
@@ -18,7 +17,6 @@ interface SqlCrudRepository<Entity, Table : BaseTable>
         Unit
     }
 
-    @KtorExperimentalAPI
     override suspend fun update(entity: Entity, entityId: Long): Unit = database.query {
         table.update({ table.id eq entityId }) { row ->
             setFields(row, entity)

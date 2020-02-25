@@ -68,7 +68,6 @@ class ProbeReportService(
         created = Instant.now()
     )
 
-
     suspend fun containsByNameAndApiKey(name: String, apiKey: ByteArray): Boolean =
         probeRepository.containsByNameAndApiKey(name, apiKey)
 

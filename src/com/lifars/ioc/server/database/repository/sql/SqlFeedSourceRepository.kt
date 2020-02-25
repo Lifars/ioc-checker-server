@@ -4,11 +4,10 @@ import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.FeedSource
 import com.lifars.ioc.server.database.repository.FeedSourceRepository
 import com.lifars.ioc.server.database.tables.sql.FeedSources
-import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-class SqlFeedSourceRepository @KtorExperimentalAPI constructor(
+class SqlFeedSourceRepository(
     override val database: Database
 ): FeedSourceRepository, SqlCrudRepository<FeedSource, FeedSources> {
     override val table: FeedSources

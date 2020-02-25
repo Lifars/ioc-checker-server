@@ -69,7 +69,6 @@ private fun JWTAuthenticationProvider.Configuration.jwtAuth(
 ) {
     realm = authRealm
     verifier(jwtProvider.verifier)
-//    authSchemes("token")
     validate { credential ->
         if (credential.payload.audience.contains(jwtProvider.audience).not())
             return@validate null

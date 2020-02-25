@@ -7,14 +7,13 @@ import com.lifars.ioc.server.database.tables.sql.IocSearchResults
 import com.lifars.ioc.server.database.tables.sql.Iocs
 import com.lifars.ioc.server.database.tables.sql.ProbeReports
 import com.lifars.ioc.server.database.tables.sql.Probes
-import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-class SqlProbeOkResultRepository @KtorExperimentalAPI constructor(override val database: Database) :
+class SqlProbeOkResultRepository(override val database: Database) :
     ProbeOkResultRepository,
     SqlCrdRepository<IocSearchResult, IocSearchResults> {
 

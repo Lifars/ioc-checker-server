@@ -7,8 +7,6 @@ import com.lifars.ioc.server.config.AppConstants
 
 class PasswordHasher(private val pepper: String) {
 
-//    private val bcryptHasher = BCrypt.with(BCrypt.Version.VERSION_2Y, LongPasswordStrategies.hashSha512(BCrypt.Version.VERSION_2Y))
-//    private val bcryptVerifyer = BCrypt.verifyer(BCrypt.Version.VERSION_2Y, LongPasswordStrategies.hashSha512(BCrypt.Version.VERSION_2Y))
 private val bcryptHasher = BCrypt.with(BCrypt.Version.VERSION_2Y, LongPasswordStrategies.truncate(BCrypt.Version.VERSION_2Y))
     private val bcryptVerifyer = BCrypt.verifyer(BCrypt.Version.VERSION_2Y, LongPasswordStrategies.truncate(BCrypt.Version.VERSION_2Y))
     private val cost = 13

@@ -6,7 +6,6 @@ import com.lifars.ioc.server.database.entities.ProbeWithApiKey
 import com.lifars.ioc.server.database.repository.ProbeRepository
 import com.lifars.ioc.server.database.tables.sql.Probes
 import com.lifars.ioc.server.database.tables.sql.Users
-import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.and
@@ -14,7 +13,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.Instant
 
-class SqlProbeRepository @KtorExperimentalAPI constructor(
+class SqlProbeRepository(
     override val database: Database
 ) : SqlCrudRepository<ProbeWithApiKey, Probes>, ProbeRepository {
 

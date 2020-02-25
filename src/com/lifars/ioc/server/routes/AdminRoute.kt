@@ -37,20 +37,9 @@ fun Route.adminProbe(
 ) {
 
     authenticate(ADMIN_AUTH) {
-        //        post<ClientLocations.Api.Auth.RegisterNewProbe>{
-//            val principal = call.principal<UserPrincipal>()
-//            val result = principal?.let {
-//                val request = call.receive<ProbePayload.Request.RegisterProbe>()
-//                service.registerProbe(request, principal)
-//            }?: throw AuthenticationException("Unauthenticated entity tried to register a new probe.")
-//            logger.info { "A new probe with id ${result.id} has been registered" }
-//            call.respond(result)
-//        }
-
         get<AdminLocations.List.Probe> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetList>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -69,7 +58,6 @@ fun Route.adminProbe(
         get<AdminLocations.ManyReference.Probe> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -121,7 +109,6 @@ fun Route.adminIoc(
         get<AdminLocations.List.Ioc> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetList>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -140,7 +127,6 @@ fun Route.adminIoc(
         get<AdminLocations.ManyReference.Ioc> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -185,7 +171,6 @@ fun Route.adminProbeReport(
         get<AdminLocations.List.ProbeReport> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetList>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -204,7 +189,6 @@ fun Route.adminProbeReport(
         get<AdminLocations.ManyReference.ProbeReport> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -266,7 +250,6 @@ fun Route.adminUser(
         get<AdminLocations.ManyReference.User> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 
@@ -328,7 +311,6 @@ fun Route.adminFeedSource(
         get<AdminLocations.ManyReference.FeedSource> { parameters ->
             val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
             val response = service.find(request)
-//        contentRangeHeader(request.pagination, response.total)
             call.respond(response)
         }
 

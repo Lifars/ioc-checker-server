@@ -14,9 +14,6 @@ data class Misp(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class MispEvent(
-//    val uuid: UUID,
-//    val id: String?,
-//    val published: Boolean,
     val info: String,
     @JsonProperty("threat_level_id")
     val threatLevelId: ThreatLevelId?,
@@ -25,9 +22,6 @@ data class MispEvent(
     val timestamp: BigDecimal,
     @JsonProperty("Attribute")
     val attribute: List<MispAttribute>
-//    @JsonProperty("publish_timestamp")
-//    val publishTimestamp: BigDecimal,
-//    val orgId: String
 
 )
 
@@ -42,8 +36,6 @@ data class MispAttribute(
     enum class Category{
         @JsonEnumDefaultValue
         UnsupportedByUs,
-//        @JsonProperty("Antivirus detection")
-//        AntivirusDetection,
         @JsonProperty("Artifacts dropped")
         ArtifactsDropped,
         @JsonProperty("External analysis")
@@ -55,18 +47,6 @@ data class MispAttribute(
     enum class Type{
         @JsonEnumDefaultValue
         UnsupportedByUs,
-//        @JsonProperty("link")
-//        LINK,
-//        @JsonProperty("comment")
-//        COMMENT,
-//        @JsonProperty("hex")
-//        HEX,
-//        @JsonProperty("attachment")
-//        ATTACHMENT,
-//        @JsonProperty("other")
-//        OTHER,
-//        @JsonProperty("anonymised")
-//        ANONYMISED,
         @JsonProperty("md5")
         MD5,
         @JsonProperty("sha1")

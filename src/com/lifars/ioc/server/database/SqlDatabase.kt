@@ -5,7 +5,6 @@ import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.config.ApplicationConfig
-import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -14,9 +13,8 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.TransactionInterface
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.vendors.DatabaseDialect
 
-class Database @KtorExperimentalAPI constructor(
+class Database constructor(
     config: ApplicationConfig
 ) {
     companion object{

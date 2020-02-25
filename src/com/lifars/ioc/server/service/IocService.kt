@@ -109,7 +109,6 @@ private class IocConverter {
             certsCheck = entry.certsCheck?.let { certCheck ->
                 IocPayload.CertsInfo(
                     name = certCheck.name
-//                    search = certCheck.search.name.let { IocPayload.CertSearchType.valueOf(it) }
                 )
             },
             fileCheck = entry.fileCheck?.let { fileCheck ->
@@ -174,7 +173,6 @@ private class IocConverter {
             certsCheck = entry.certsCheck?.let { certCheck ->
                 IocEntry.CertsInfo(
                     name = certCheck.name
-//                    search = certCheck.search.name.let { IocEntry.CertSearchType.valueOf(it) }
                 )
             },
             fileCheck = entry.fileCheck?.let { fileCheck ->

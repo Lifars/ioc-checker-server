@@ -19,12 +19,3 @@ object Probes : BaseTable("Probes") {
         )
     }
 }
-
-//class Probe(id: EntityID<Long>) : BaseEntity(id, Probes){
-//    companion object : UpdateHookedEntityClass<Probe>(Probes)
-//
-//    var name by Probes.name
-//    var apiKey by Probes.apiKey
-//    var expires by Probes.expires
-//    var user by User referencedOn Probes.owner
-//}

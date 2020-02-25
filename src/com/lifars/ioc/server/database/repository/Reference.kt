@@ -6,24 +6,6 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.select
 
-//data class Filter<T>(
-//    val column: Column<T>,
-//    val value: T
-//) {
-//    constructor(
-//        columnName: String,
-//        value: T,
-//        table: Table
-//    ): this(
-//        column = table.columns.first { it.name == columnName } as Column<T>,
-//        value = value
-//    )
-//}
-//
-//fun <T> Table.select(filter: Filter<T>) = this.select {
-//    filter.column eq filter.value
-//}
-
 data class Reference(
     val targetTable: String,
     val id: Long

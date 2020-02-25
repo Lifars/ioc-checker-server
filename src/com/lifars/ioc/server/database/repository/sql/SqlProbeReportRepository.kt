@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.Instant
 
-class SqlProbeReportRepository @KtorExperimentalAPI constructor(
+class SqlProbeReportRepository(
     override val database: Database,
     private val iocRepository: IocRepository,
     private val probeOkRepository: ProbeOkResultRepository,
@@ -63,7 +63,6 @@ class SqlProbeReportRepository @KtorExperimentalAPI constructor(
     override val table: ProbeReports
         get() = ProbeReports
 
-    @KtorExperimentalAPI
     override suspend fun create(entity: ProbeReport): Long {
         val createdId = super.create(entity)
         val results = entity.iocResults

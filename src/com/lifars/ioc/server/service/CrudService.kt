@@ -8,8 +8,6 @@ interface CrudService<Entity, ReadDto, SaveDto> {
 
     fun Entity.toDto(): ReadDto
 
-//    fun ReadDto.toEntity(): Entity
-
     fun Entity.toSavedDto(): SaveDto
 
     fun SaveDto.toSaveEntity(): Entity
@@ -95,56 +93,3 @@ interface CrudService<Entity, ReadDto, SaveDto> {
         else
             Filter(this.entries.map { (field, value) -> Filter.Item(field, value) })
 }
-//            val
-//            runCatching { Instant.parse(value) }
-//                .onSuccess { return Filter.Item(column = field, value = it) }
-//            runCatching { value.toDouble() }
-//                .onSuccess { return Filter(column = field, value = it) }
-//            runCatching { value.toLong() }
-//                .onSuccess { return Filter(column = field, value = it) }
-//            runCatching {
-//                val valueLower = value.toLowerCase()
-//                if (value == "true") true else if (value == "false") false else throw InvalidArgumentException("Nah")
-//            }.onSuccess { return Filter(column = field, value = it) }
-//            runCatching { value }
-//                .onSuccess { return Filter(column = field, value = it) }
-
-//            return null
-//        }
-
-
-//    private fun JsonObject.toRepositoryFilter(): Filter<*>? {
-//        val field = this.keySet().firstOrNull() ?: return null
-//
-//        val value = runCatching { this[field] }
-//            .getOrNull() ?: return null
-//
-//        runCatching { value.asString.let { Instant.parse(it) } }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//        runCatching { value.asDouble }
-//            .onSuccess { return Filter(column = field, value = it) }
-//        runCatching { value.asLong }
-//            .onSuccess { return Filter(column = field, value = it) }
-//        runCatching { value.asBoolean }
-//            .onSuccess { return Filter(column = field, value = it) }
-//        runCatching { value.asString }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//
-//        return null
-//    }
-
-//    private fun JsonObject.toRepositoryFilter(): Filter<*>? {
-//        val field = this.keySet().firstOrNull() ?: return null
-//        runCatching { this[field] }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//        runCatching { this.int(field) }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//        runCatching { this.double(field) }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//        runCatching { this.boolean(field) }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//        runCatching { this.string(field) }
-//            .onSuccess { if (it != null) return Filter(column = field, value = it) }
-//
-//        return null
-//    }

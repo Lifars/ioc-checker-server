@@ -4,25 +4,6 @@ import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.Table
 
-//data class Sort(
-//    val column: Column<*>,
-//    val order: Order
-//) {
-//    enum class Order{
-//        ASC,
-//        DESC
-//    }
-//
-//    constructor(
-//        columnName: String,
-//        order: String,
-//        table: Table
-//    ): this(
-//        column = table.columns.first { it.name == columnName },
-//        order = Order.valueOf(order)
-//    )
-//}
-
 data class Sort(
     val column: String,
     val order: Order

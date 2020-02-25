@@ -4,13 +4,12 @@ import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.UserWithPassword
 import com.lifars.ioc.server.database.repository.UserRepository
 import com.lifars.ioc.server.database.tables.sql.Users
-import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-class SqlUserRepository @KtorExperimentalAPI constructor(
+class SqlUserRepository(
     override val database: Database
 ) : SqlCrudRepository<UserWithPassword, Users>, UserRepository {
 

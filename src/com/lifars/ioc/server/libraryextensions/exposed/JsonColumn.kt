@@ -52,25 +52,3 @@ private class JsonColumnType<out T : Any>(
     override fun notNullValueToDB(value: Any): Any = jsonConverter.toJson(value)
     override fun nonNullValueToString(value: Any): String = "'${jsonConverter.toJson(value)}'"
 }
-
-
-//private class JsonAsText<out T : Any>(
-//    private val klass: KClass<T>,
-//    private val jsonConverter: JsonConverter
-//) : ColumnType() {
-//    private val impl = TextColumnType()
-//    override fun sqlType(): String = impl.sqlType()
-//
-//    override fun valueFromDB(value: Any): Any {
-//        value as String
-//        return try {
-//            jsonConverter.fromJson(value, klass)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            throw RuntimeException("Can't parse JSON: $value")
-//        }
-//    }
-//
-//    override fun notNullValueToDB(value: Any): Any = jsonConverter.toJson(value)
-//    override fun nonNullValueToString(value: Any): String = "'${jsonConverter.toJson(value)}'"
-//}

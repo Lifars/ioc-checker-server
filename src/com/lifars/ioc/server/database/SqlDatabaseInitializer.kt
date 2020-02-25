@@ -57,7 +57,7 @@ data class DatabaseInitializer(
 
     private fun createDefaultFeedSources() {
         listOf(
-//            "https://www.circl.lu/doc/misp/feed-osint/",
+            "https://www.circl.lu/doc/misp/feed-osint/",
             "https://www.botvrij.eu/data/feed-osint/?C=M;O=D"
         ).let { feedSources->
             FeedSources.batchInsert(feedSources) { source ->

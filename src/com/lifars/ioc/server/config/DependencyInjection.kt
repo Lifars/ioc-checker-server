@@ -26,7 +26,6 @@ val userQualifier = named("userQualifier")
 val probeRealm = named("probeRealm")
 val userRealm = named("userRealm")
 
-@KtorExperimentalAPI
 fun mainDiModule(
     applicationConfig: ApplicationConfig
 ) = module {

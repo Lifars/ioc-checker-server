@@ -8,7 +8,6 @@ data class Interval<T : Comparable<T>>(
     val end: T
 )
 
-//fun<T, S: T?> ExpressionWithColumnType<S>.between(from: T, to: T): Op<Boolean> = Between(this, asLiteral(from), asLiteral(to))
 infix fun <T : Comparable<T>, S : T> ExpressionWithColumnType<S>.between(interval: Interval<T>): Op<Boolean> =
     Between(this, asLiteral(interval.begin), asLiteral(interval.end))
 

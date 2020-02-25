@@ -36,25 +36,3 @@ object Scheduler {
         )
     }
 }
-
-//object ScheduledTasks {
-//    private val scheduler = StdSchedulerFactory().scheduler
-//
-//    init {
-//        scheduler.start()
-//    }
-//
-//    fun schedule(
-//        settings: com.lifars.ioc.server.scheduled.TaskSettings,
-//        task: () -> Unit
-//    ) {
-//        val taskWrapped = Job { task() }
-//        val job =  newJob(taskWrapped.javaClass)
-//            .build()
-//
-//        val trigger = newTrigger()
-//            .startAt(Date.from(settings.start.atZone(ZoneId.systemDefault()).toInstant()))
-//            .e
-//
-//    }
-//}

@@ -12,9 +12,10 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-class SqlProbeErrorRepository @KtorExperimentalAPI constructor(override val database: Database) :
+class SqlProbeErrorRepository(override val database: Database) :
     ProbeErrorRepository,
     SqlCrdRepository<IocSearchError, IocSearchErrors> {
+
     override suspend fun findByProbe(
         probeId: Long,
         pagination: Pagination

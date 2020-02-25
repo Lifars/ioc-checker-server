@@ -17,17 +17,13 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
-import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.request.path
 import io.ktor.response.respond
-import io.ktor.util.KtorExperimentalAPI
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
 import org.slf4j.event.Level
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 internal fun Application.configure(parsedArgs: CommandLineArguments) {
     install(Locations) {
     }
@@ -46,7 +42,6 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
         header(HttpHeaders.Authorization)
         header("Content-Range")
         header(HttpHeaders.AccessControlAllowOrigin)
-//        allowSameOrigin=true
         allowNonSimpleContentTypes = true
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
@@ -112,10 +107,6 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
             throw cause
         }
     }
-
-//   install(Sessions) {
-//        cookie<MySession>("SESSION")
-//    }
 
     fillDefaultDatabaseRows(parsedArgs)
     installScheduledTasks()

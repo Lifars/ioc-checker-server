@@ -6,13 +6,12 @@ import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.tables.sql.IocSearchResults
 import com.lifars.ioc.server.database.tables.sql.Iocs
 import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
-import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.Instant
 
-class SqlIocRepository @KtorExperimentalAPI constructor(override val database: Database) :
+class SqlIocRepository(override val database: Database) :
     IocRepository,
     SqlCrudRepository<Ioc, Iocs> {
 

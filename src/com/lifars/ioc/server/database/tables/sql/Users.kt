@@ -16,15 +16,3 @@ object Users : BaseTable("Users") {
         ADMIN
     }
 }
-
-//class User(id: EntityID<Long>) : BaseEntity(id, Users){
-//    companion object : UpdateHookedEntityClass<User>(Users)
-//
-//    var name by Users.name
-//    var email by Users.email
-//    var company by Users.company
-//    var password by Users.password
-//    var expires by Users.expires
-//    var role by Users.role
-//    val registeredProbes by Probe referrersOn Probes.owner
-//}
