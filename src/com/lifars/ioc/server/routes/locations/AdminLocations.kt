@@ -18,6 +18,8 @@ class AdminLocations {
         data class User(val query: String)
         @Location("/feed_sources")
         data class FeedSource(val query: String)
+        @Location("/found_iocs")
+        data class FoundIoc(val query: String)
     }
 
     @Location("/one")
@@ -32,6 +34,8 @@ class AdminLocations {
         data class User(val id: Long)
         @Location("/feed_sources/{id}")
         data class FeedSource(val id: Long)
+        @Location("/found_iocs/{id}")
+        data class FoundIoc(val id: Long)
     }
 
     @Location("/many")
@@ -46,6 +50,8 @@ class AdminLocations {
         data class User(val query: String)
         @Location("/feed_sources")
         data class FeedSource(val query: String)
+        @Location("/found_iocs")
+        data class FoundIoc(val query: String)
     }
 
     @Location("/many_reference")
@@ -60,6 +66,8 @@ class AdminLocations {
         data class User(val query: String)
         @Location("/feed_sources")
         data class FeedSource(val query: String)
+        @Location("/found_iocs")
+        data class FoundIoc(val query: String)
     }
 
     @Location("/create")
@@ -74,6 +82,8 @@ class AdminLocations {
         class User
         @Location("/feed_sources")
         class FeedSource
+        @Location("/found_iocs")
+        class FoundIoc
     }
 
     @Location("/update")
@@ -88,9 +98,11 @@ class AdminLocations {
         class User
         @Location("/feed_sources")
         class FeedSource
+        @Location("/found_iocs")
+        class FoundIoc
     }
 
-    @Location("/update-many")
+    @Location("/update_many")
     class UpdateMany{
         @Location("/iocs")
         class Ioc
@@ -102,6 +114,8 @@ class AdminLocations {
         class User
         @Location("/feed_sources")
         class FeedSource
+        @Location("/found_iocs")
+        class FoundIoc
     }
 
     @Location("/delete")
@@ -116,6 +130,8 @@ class AdminLocations {
         data class User(val id: Long)
         @Location("/feed_sources/{id}")
         data class FeedSource(val id: Long)
+        @Location("/found_iocs/{id}")
+        data class FoundIoc(val id: Long)
     }
 
     @Location("/delete_many")
@@ -130,5 +146,7 @@ class AdminLocations {
         data class User(val query: String)
         @Location("/feed_sources")
         data class FeedSource(val query: String)
+        @Location("/found_iocs")
+        data class FoundIoc(val query: String)
     }
 }

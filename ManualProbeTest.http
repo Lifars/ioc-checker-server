@@ -26,23 +26,7 @@ Authorization: Basic QmFzaWMgcHJvYmUxOnByb2JlS2V5 # probe1:probeKey
   "datetime": "2020-01-25T21:16:29.659226400Z",
   "foundIocs": [
     1
-  ],
-  "iocResults": [
-    {
-      "iocId": 1,
-      "data": [
-        "C:/Users/IEUser/Documents/Luke.txt"
-      ]
-    },
-    {
-      "iocId": 1,
-      "data": [
-        "C:/Users/IEUser/Documents/Leia.txt",
-        "85076e14bfea8bc12ee01fae12ea77f9"
-      ]
-    }
-  ],
-  "iocErrors": []
+  ]
 }
 
 ###

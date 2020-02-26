@@ -85,7 +85,7 @@ object Payload {
         )
 
         data class DeleteMany(
-            val data: List<Long>
+            val ids: List<Long>
         )
 
         data class Pagination(

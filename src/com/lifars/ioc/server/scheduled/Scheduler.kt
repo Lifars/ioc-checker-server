@@ -27,7 +27,7 @@ object Scheduler {
                 task()
             },
             Date.from(
-                settings.start.plusSeconds(10)
+                settings.start.plusSeconds(120)
                     .atDate(LocalDate.now())
                     .atZone(ZoneId.systemDefault())
                     .toInstant()

@@ -8,9 +8,7 @@ object ProbeReportPayload {
     object Request {
         data class ReportUpload(
             val datetime: Instant = Instant.now(),
-            val foundIocs: List<Long>,
-            val iocResults: List<IocSearchResult>,
-            val iocErrors: List<IocSearchError>
+            val foundIocs: List<Long>
         )
 
         data class Create(
@@ -29,22 +27,10 @@ object ProbeReportPayload {
         ) : Payload.Request.UpdateMany<SaveProbeReport>
     }
 
-    data class IocSearchResult(
-        val iocId: Long,
-        val data: List<String>
-    )
-
-    data class IocSearchError(
-        val kind: String,
-        val message: String
-    )
-
     data class ProbeReport(
         val id: Long,
         val probeId: Long,
-        val foundIocs: List<Long>,
-        val iocResults: List<IocSearchResult>,
-        val iocErrors: List<IocSearchError>,
+        val foundIocsCount: Int,
         val created: Instant,
         val updated: Instant,
         val probeTimestamp: Instant
@@ -55,8 +41,6 @@ object ProbeReportPayload {
         val id: Long,
         val probeId: Long,
         val foundIocs: List<Long>,
-        val iocResults: List<IocSearchResult>,
-        val iocErrors: List<IocSearchError>,
         val probeTimestamp: Instant
     )
 }

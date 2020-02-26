@@ -42,8 +42,17 @@ fun Filter.buildExpression(table: Table) =
             val columnName: String = if (filterItem.column == "id") "_id" else filterItem.column
             val column = table.columns.first { it.name == columnName }
             val columnType = column.columnType
-            val valueWrapped = QueryParameter(filterItem.value, columnType)
-            EqOp(column, valueWrapped)
+
+            when(filterItem.value){
+                is String -> {
+                    val valueWrapped = QueryParameter("%${filterItem.value}%", columnType)
+                    LikeOp(column, valueWrapped)
+                }
+                else -> {
+                    val valueWrapped = QueryParameter(filterItem.value, columnType)
+                    EqOp(column, valueWrapped)
+                }
+            }
         }.let { AndOp(it) }
 
 

@@ -48,11 +48,15 @@ fun Application.module(testing: Boolean = false) {
             authService = get()
         )
 
-       adminProbe(
+        adminProbe(
             service = get()
         )
 
         adminIoc(
+            service = get()
+        )
+
+        adminFoundIoc(
             service = get()
         )
 

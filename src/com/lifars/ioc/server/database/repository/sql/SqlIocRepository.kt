@@ -3,9 +3,8 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.Ioc
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.sql.IocSearchResults
 import com.lifars.ioc.server.database.tables.sql.Iocs
-import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
+import com.lifars.ioc.server.database.tables.sql.FoundIocs
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
@@ -40,17 +39,10 @@ class SqlIocRepository(override val database: Database) :
         }.map { it.toEntity() }
     }
 
-    override suspend fun findByProbeReport(probeResultId: Long): List<Ioc> = database.query {
-        (table innerJoin IocSearchResults)
-            .slice(table.columns)
-            .select { IocSearchResults.probeReportId eq probeResultId }
-            .mapAll()
-    }
-
     override suspend fun findIdsByProbeReport(probeResultId: Long): List<Long> = database.query {
         (table innerJoin FoundIocs)
             .slice(table.id)
-            .select { FoundIocs.probeReport eq probeResultId }
+            .select { FoundIocs.probeReportId eq probeResultId }
             .map{ it[table.id].value }
     }
 }

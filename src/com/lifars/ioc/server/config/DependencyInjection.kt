@@ -14,7 +14,6 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.config.ApplicationConfig
-import io.ktor.util.KtorExperimentalAPI
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
@@ -68,20 +67,16 @@ fun mainDiModule(
 
     single<IocRepository> { SqlIocRepository(get()) }
 
-    single<ProbeErrorRepository> { SqlProbeErrorRepository(get()) }
-
-    single<ProbeOkResultRepository> { SqlProbeOkResultRepository(get()) }
-
     single<FeedSourceRepository> { SqlFeedSourceRepository(get()) }
+
+    single<FoundIocRepository> { SqlFoundIoctRepository(get()) }
 
     single { KeyValueVisitedFeedUrlRepository(get()) }
 
     single<ProbeReportRepository> {
         SqlProbeReportRepository(
             database = get(),
-            iocRepository = get(),
-            probeErrorRepository = get(),
-            probeOkRepository = get()
+            iocRepository = get()
         )
     }
 
@@ -133,6 +128,12 @@ fun mainDiModule(
             iocRepository = get(),
             visitedFeedUrls = get(),
             httpClientFactory = { get() }
+        )
+    }
+
+    single {
+        FoundIocService(
+            repository = get()
         )
     }
 }

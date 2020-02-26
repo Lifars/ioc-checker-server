@@ -73,7 +73,7 @@ interface CrudService<Entity, ReadDto, SaveDto> {
     }
 
     suspend fun delete(request: Payload.Request.DeleteMany): Payload.Response.DeleteMany {
-        repository.deleteMany(request.data)
+        repository.deleteMany(request.ids)
         return Payload.Response.DeleteMany(data = null)
     }
 

@@ -6,5 +6,5 @@ import java.time.Instant
 
 abstract class BaseTable(name: String) : LongIdTable(name, "_id") {
     val created = timestamp("created").clientDefault { Instant.now() }
-    val updated = timestamp("updated").clientDefault { Instant.now(); }
+    val updated = timestamp("updated").clientDefault { Instant.now() }
 }

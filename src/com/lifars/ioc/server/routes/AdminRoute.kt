@@ -163,6 +163,69 @@ fun Route.adminIoc(
 }
 
 @KtorExperimentalLocationsAPI
+fun Route.adminFoundIoc(
+    service: FoundIocService
+) {
+
+    authenticate(ADMIN_AUTH) {
+
+        get<AdminLocations.List.FoundIoc> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.GetList>()
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        get<AdminLocations.One.FoundIoc> { parameters ->
+            val request = Payload.Request.GetOne(parameters.id)
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        get<AdminLocations.Many.FoundIoc> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.GetMany>()
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        get<AdminLocations.ManyReference.FoundIoc> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.GetManyReference>()
+            val response = service.find(request)
+            call.respond(response)
+        }
+
+        post<AdminLocations.Create.FoundIoc> {
+            val request = call.receive<FoundIocPayload.Request.Create>()
+            val response = service.save(request)
+            call.respond(response)
+        }
+
+        put<AdminLocations.Update.FoundIoc> {
+            val request = call.receive<FoundIocPayload.Request.Update>()
+            val response = service.save(request)
+            call.respond(response)
+        }
+
+        put<AdminLocations.UpdateMany.FoundIoc> {
+            val request = call.receive<FoundIocPayload.Request.UpdateMany>()
+            val response = service.save(request)
+            call.respond(response)
+        }
+
+        delete<AdminLocations.Delete.FoundIoc> { parameters ->
+            val request = Payload.Request.Delete(parameters.id)
+            val response = service.delete(request)
+            call.respond(response)
+        }
+
+        delete<AdminLocations.DeleteMany.FoundIoc> { parameters ->
+            val request = parameters.query.fromJson<Payload.Request.DeleteMany>()
+            val response = service.delete(request)
+            call.respond(response)
+        }
+    }
+}
+
+@KtorExperimentalLocationsAPI
 fun Route.adminProbeReport(
     service: ProbeReportService
 ) {

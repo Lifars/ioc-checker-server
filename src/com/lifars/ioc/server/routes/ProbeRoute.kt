@@ -29,11 +29,11 @@ fun Route.probeIocSearch(
     authenticate(PROBE_AUTH){
         get<ProbeLocations.Api.Auth.GetIocs> { requestParameters ->
             val principal: ProbePrincipal? = call.principal()
-            val hours = requestParameters.hours
+            val page = requestParameters.page
             val result = principal?.let {
-                iocService.latestIocs(hours)
+                iocService.iocsForProbe(page)
             }?: throw AuthenticationException("Unauthenticated entity tried to get IOCs.")
-            logger.info { "Probe with id=${principal.probeId}: authenticated request for IOC definitions old max $hours hours." }
+            logger.info { "Probe with id=${principal.probeId}: authenticated request for IOC definitions on page $page." }
             call.respond(result)
         }
 

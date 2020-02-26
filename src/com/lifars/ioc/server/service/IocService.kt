@@ -3,8 +3,9 @@ package com.lifars.ioc.server.service
 import com.lifars.ioc.server.database.entities.Ioc
 import com.lifars.ioc.server.database.entities.IocEntry
 import com.lifars.ioc.server.database.repository.IocRepository
+import com.lifars.ioc.server.database.repository.Pagination
+import com.lifars.ioc.server.database.repository.Sort
 import com.lifars.ioc.server.payload.IocPayload
-import java.time.Duration
 import java.time.Instant
 
 class IocService(
@@ -34,14 +35,18 @@ class IocService(
         definition = iocConverter.iocEntryToPayloadRec(this.definition)
     )
 
-    suspend fun latestIocs(hours: Int): IocPayload.Response.LatestIocs {
+    suspend fun iocsForProbe(page: Int): IocPayload.Response.IocsForProbe {
         val iocConverter = IocConverter()
-        val iocs = repository.findNewerThan(
-            instant = Instant.now() - Duration.ofHours(hours.toLong())
-        ).map { it.toProbeResponseIoc(iocConverter) }
-        return IocPayload.Response.LatestIocs(
+        val pageLimit = 150
+        val iocsPage = repository.find(
+            pagination =  Pagination(pageLimit * page, pageLimit),
+            sort = Sort("id", Sort.Order.DESC)
+        )
+        val iocs = iocsPage.map { it.toProbeResponseIoc(iocConverter) }
+        return IocPayload.Response.IocsForProbe(
             releaseDatetime = Instant.now(),
-            iocs = iocs
+            iocs = iocs,
+            totalIocs = iocsPage.totalSize
         )
     }
 

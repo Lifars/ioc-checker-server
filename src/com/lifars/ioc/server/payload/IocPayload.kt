@@ -6,9 +6,10 @@ import java.time.Instant
 object IocPayload {
 
     object Response {
-        data class LatestIocs(
+        data class IocsForProbe(
             val releaseDatetime: Instant,
-            val iocs: List<IocForProbe>
+            val iocs: List<IocForProbe>,
+            val totalIocs: Int
         )
     }
 
@@ -119,13 +120,7 @@ object IocPayload {
         val name: String
     )
 
-//    enum class CertSearchType {
-//        DOMAIN,
-//        ISSUER
-//    }
-
     data class CertsInfo(
-//        val search: CertSearchType,
         val name: String
     )
 

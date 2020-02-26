@@ -1,7 +1,6 @@
 package com.lifars.ioc.server.database
 
 import com.lifars.ioc.server.database.tables.sql.*
-import com.lifars.ioc.server.database.tables.sql.auxiliary.FoundIocs
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.config.ApplicationConfig
@@ -13,21 +12,24 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.TransactionInterface
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.vendors.DatabaseDialect
+
+lateinit var databaseDialect: DatabaseDialect
 
 class Database constructor(
     config: ApplicationConfig
 ) {
     companion object{
-        val tables = arrayOf(
-            Users,
-            Iocs,
-            IocSearchResults,
-            IocSearchErrors,
-            ProbeReports,
-            Probes,
-            FoundIocs,
-            FeedSources
-        )
+        val tables by lazy {
+            arrayOf(
+                Users,
+                Iocs,
+                ProbeReports,
+                Probes,
+                FoundIocs,
+                FeedSources
+            )
+        }
 
         val tablesByName by lazy {
             tables.associateBy { it.tableName }
@@ -37,6 +39,7 @@ class Database constructor(
 
     init {
         org.jetbrains.exposed.sql.Database.connect(hikari(config))
+            .apply { databaseDialect = dialect }
         transaction {
             SchemaUtils.createMissingTablesAndColumns(
                 *tables

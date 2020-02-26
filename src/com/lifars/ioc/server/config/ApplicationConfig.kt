@@ -42,6 +42,7 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
         header(HttpHeaders.Authorization)
         header("Content-Range")
         header(HttpHeaders.AccessControlAllowOrigin)
+        allowSameOrigin
         allowNonSimpleContentTypes = true
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.

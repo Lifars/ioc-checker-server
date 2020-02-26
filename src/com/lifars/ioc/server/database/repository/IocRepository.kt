@@ -11,7 +11,5 @@ interface IocRepository: CrudRepository<Long, Ioc> {
 
     suspend fun findNewerThan(instant: Instant): List<Ioc>
 
-    suspend fun findByProbeReport(probeResultId: Long): List<Ioc>
-
     suspend fun findIdsByProbeReport(probeResultId: Long): List<Long>
 }

@@ -11,8 +11,8 @@ object ProbeLocations {
         @KtorExperimentalLocationsAPI
         @Location("/auth")
         class Auth {
-            @Location("/get/ioc/{hours}")
-            data class GetIocs(val hours: Int)
+            @Location("/get/ioc/{page}")
+            data class GetIocs(val page: Int)
 
             @Location("/post/ioc/result")
             class PostIocResult
