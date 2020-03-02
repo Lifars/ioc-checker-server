@@ -1,9 +1,6 @@
 package com.lifars.ioc.server
 
-import com.lifars.ioc.server.config.ADMIN_AUTH
-import com.lifars.ioc.server.config.CommandLineArguments
-import com.lifars.ioc.server.config.configure
-import com.lifars.ioc.server.config.filterArgsForArgParser
+import com.lifars.ioc.server.config.*
 import com.lifars.ioc.server.database.entities.Ioc
 import com.lifars.ioc.server.routes.*
 import com.xenomachina.argparser.ArgParser
@@ -24,6 +21,7 @@ lateinit var parsedArgs: CommandLineArguments
 private val rootLogger = KotlinLogging.logger { }
 
 fun main(args: Array<String>) = mainBody {
+    Logo.print()
     parsedArgs = ArgParser(filterArgsForArgParser(args)).parseInto(::CommandLineArguments)
 
     // This must be last line in main

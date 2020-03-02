@@ -63,13 +63,7 @@ data class IocEntry(
         val name: String
     )
 
-//    enum class CertSearchType {
-//        DOMAIN,
-//        ISSUER
-//    }
-
     data class CertsInfo(
-//        val search: CertSearchType,
         val name: String
     )
 

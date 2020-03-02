@@ -8,19 +8,19 @@
 
     <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/ktor.log</file>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>DEBUG</level>-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/ktor.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- each archived file, size max 15MB -->
-            <maxFileSize>15MB</maxFileSize>
+            <!-- each archived file, size max 50 MB -->
+            <maxFileSize>50 MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
             <totalSizeCap>20GB</totalSizeCap>
-            <!-- 120 days to keep -->
-            <maxHistory>120</maxHistory>
+            <!-- 365 days to keep -->
+            <maxHistory>365</maxHistory>
         </rollingPolicy>
 
         <encoder>
@@ -28,15 +28,16 @@
         </encoder>
     </appender>
 
-    <root level="DEBUG">
+    <root level="FILE">
         <appender-ref ref="FILE-ROLLING"/>
     </root>
-    <root level="DEBUG">
+    <root level="FILE">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger name="org.eclipse.jetty" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
-    <logger name="com.zaxxer.hikari.pool.HikariPool" level="INFO"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="io.netty" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="org.apache.http" level="WARN"/>
-    <logger name="edu.uci.ics.crawler4j" level="INFO"/>
+    <logger name="Exposed" level="INFO"/>
+    <logger name="edu.uci.ics.crawler4j" level="WARN"/>
 </configuration>
