@@ -26,13 +26,38 @@ interface CrudService<Entity, ReadDto, SaveDto> {
         )
     }
 
+    suspend fun find(request: Payload.Request.GetList, user: Long): Payload.Response.GetList<ReadDto> {
+        val entities = repository.findOwned(
+            pagination = request.pagination.toRepositoryPagination(),
+            sort = request.sort?.toRepositorySort(),
+            filter = request.filter?.toRepositoryFilter(),
+            reference = null,
+            ownerId = user
+        )
+        val dtos = entities.map { it.toDto() }
+        return Payload.Response.GetList(
+            data = dtos,
+            total = entities.totalSize
+        )
+    }
+
     suspend fun find(request: Payload.Request.GetOne): Payload.Response.GetOne<ReadDto> {
         val entity = repository.findById(request.id)?.let { it.toDto() }
         return Payload.Response.GetOne(entity)
     }
 
+    suspend fun find(request: Payload.Request.GetOne, user: Long): Payload.Response.GetOne<ReadDto> {
+        val entity = repository.findByIdAndOwner(request.id, user)?.let { it.toDto() }
+        return Payload.Response.GetOne(entity)
+    }
+
     suspend fun find(request: Payload.Request.GetMany): Payload.Response.GetMany<ReadDto> {
         val entities = repository.findByIds(request.ids)
+        return Payload.Response.GetMany(data = entities.map { it.toDto() })
+    }
+
+    suspend fun find(request: Payload.Request.GetMany, user: Long): Payload.Response.GetMany<ReadDto> {
+        val entities = repository.findByIdsAndOwner(request.ids, user)
         return Payload.Response.GetMany(data = entities.map { it.toDto() })
     }
 
@@ -45,6 +70,23 @@ interface CrudService<Entity, ReadDto, SaveDto> {
                 targetTable = request.target,
                 id = request.id
             )
+        )
+        return Payload.Response.GetManyReference(
+            data = entities.map { it.toDto() },
+            total = entities.totalSize
+        )
+    }
+
+    suspend fun find(request: Payload.Request.GetManyReference, user: Long): Payload.Response.GetManyReference<ReadDto> {
+        val entities = repository.findOwned(
+            pagination = request.pagination.toRepositoryPagination(),
+            sort = request.sort?.toRepositorySort(),
+            filter = request.filter.toRepositoryFilter(),
+            reference = Reference(
+                targetTable = request.target,
+                id = request.id
+            ),
+            ownerId = user
         )
         return Payload.Response.GetManyReference(
             data = entities.map { it.toDto() },

@@ -3,8 +3,8 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.Ioc
 import com.lifars.ioc.server.database.repository.*
-import com.lifars.ioc.server.database.tables.sql.Iocs
 import com.lifars.ioc.server.database.tables.sql.FoundIocs
+import com.lifars.ioc.server.database.tables.sql.Iocs
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
@@ -45,6 +45,21 @@ class SqlIocRepository(override val database: Database) :
             .select { FoundIocs.probeReportId eq probeResultId }
             .map{ it[table.id].value }
     }
+
+    override suspend fun findOwned(
+        pagination: Pagination,
+        filter: Filter?,
+        sort: Sort?,
+        reference: Reference?,
+        ownerId: Long
+    ): Page<Ioc> =
+        find(pagination, filter, sort, reference)
+
+    override suspend fun findByIdsAndOwner(ids: Iterable<Long>, ownerId: Long): List<Ioc> =
+        findByIds(ids)
+
+    override suspend fun findByIdAndOwner(id: Long, ownerId: Long): Ioc? =
+        findById(id)
 }
 
 fun ResultRow.toIoc() = Ioc(

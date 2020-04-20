@@ -2,7 +2,7 @@ package com.lifars.ioc.server.database.repository.sql
 
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.UserWithPassword
-import com.lifars.ioc.server.database.repository.UserRepository
+import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.tables.sql.Users
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.or
@@ -55,6 +55,20 @@ class SqlUserRepository(
     override val table: Users
         get() = Users
 
+    override suspend fun findOwned(
+        pagination: Pagination,
+        filter: Filter?,
+        sort: Sort?,
+        reference: Reference?,
+        ownerId: Long
+    ): Page<UserWithPassword> =
+        find(pagination, filter, sort, reference)
+
+    override suspend fun findByIdAndOwner(id: Long, ownerId: Long): UserWithPassword? =
+        findById(id)
+
+    override suspend fun findByIdsAndOwner(ids: Iterable<Long>, ownerId: Long): List<UserWithPassword> =
+        findByIds(ids)
 }
 
 fun ResultRow.toUser() = UserWithPassword(

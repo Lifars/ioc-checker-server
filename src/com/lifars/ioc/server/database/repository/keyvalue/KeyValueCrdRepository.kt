@@ -45,6 +45,41 @@ interface KeyValueCrdRepository<Entity, K, V> : CrdRepository<K, Entity> {
                 offset = pagination.offset
             )
 
+    override suspend fun findOwned(
+        pagination: Pagination,
+        filter: Filter?,
+        sort: Sort?,
+        reference: Reference?,
+        ownerId: K
+    ): Page<Entity> =
+        storage.entries
+            .toList()
+            .filter { it.value.ownerId() == ownerId }
+            .subList(pagination.offset, pagination.offset + pagination.limit)
+            .map { toEntity(it.key, it.value) }
+            .asPage(
+                totalSize = storage.size,
+                offset = pagination.offset
+            )
+
+    fun V.ownerId(): K
+
+    override suspend fun findByIdAndOwner(id: K, ownerId: K): Entity? =
+        storage[id]?.let { candidate ->
+            if (candidate.ownerId() == ownerId) {
+                toEntity(id, candidate)
+            } else {
+                null
+            }
+        }
+
+
+    override suspend fun findByIdsAndOwner(ids: Iterable<K>, ownerId: Long): List<Entity> =
+        storage
+            .filterKeys { it in ids }
+            .filterValues { it.ownerId() == ownerId }
+            .map { toEntity(it.key, it.value) }
+
     override suspend fun findByIds(ids: Iterable<K>): List<Entity> =
         storage
             .filterKeys { it in ids }

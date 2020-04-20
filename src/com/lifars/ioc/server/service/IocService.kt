@@ -12,7 +12,6 @@ class IocService(
     override val repository: IocRepository
 ) : CrudService<Ioc, IocPayload.Ioc, IocPayload.SaveIoc> {
 
-
     private val iocConverter = IocConverter()
 
     override fun Ioc.toDto(): IocPayload.Ioc = this.toResponseIoc(iocConverter)
@@ -39,7 +38,7 @@ class IocService(
         val iocConverter = IocConverter()
         val pageLimit = 150
         val iocsPage = repository.find(
-            pagination =  Pagination(pageLimit * page, pageLimit),
+            pagination = Pagination(pageLimit * page, pageLimit),
             sort = Sort("id", Sort.Order.DESC)
         )
         val iocs = iocsPage.map { it.toProbeResponseIoc(iocConverter) }

@@ -16,4 +16,6 @@ class KeyValueVisitedFeedUrlRepository(
     override fun VisitedFeed.toDatabaseValue() = lastDate.toEpochMilli().toString()
 
     override fun VisitedFeed.databaseKey() = url
+
+    override fun String.ownerId(): String = this
 }

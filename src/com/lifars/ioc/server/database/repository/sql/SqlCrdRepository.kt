@@ -30,6 +30,14 @@ interface SqlCrdRepository<
         table.select(filter, reference).orderBy(table, sort).mapPaged(pagination)
     }
 
+    override suspend fun findOwned(
+        pagination: Pagination,
+        filter: Filter?,
+        sort: Sort?,
+        reference: Reference?,
+        ownerId: Long
+    ): Page<Entity>
+
     override suspend fun create(entity: Entity): Long {
         val id = database.query {
             table.insertAndGetId {

@@ -70,6 +70,8 @@ dependencies {
 //    implementation "org.quartz-scheduler:quartz:$quartz_version"
 //    implementation "com.github.shyiko.skedule:skedule:$skedule_version"
     implementation "net.openhft:chronicle-map:$chroniclemap_version"
+    implementation "org.passay:passay:$passay_version"
+
 
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 }

@@ -69,7 +69,7 @@ fun mainDiModule(
 
     single<FeedSourceRepository> { SqlFeedSourceRepository(get()) }
 
-    single<FoundIocRepository> { SqlFoundIoctRepository(get()) }
+    single<FoundIocRepository> { SqlFoundIocRepository(get()) }
 
     single { KeyValueVisitedFeedUrlRepository(get()) }
 

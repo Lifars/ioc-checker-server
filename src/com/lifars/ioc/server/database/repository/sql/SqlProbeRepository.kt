@@ -3,7 +3,7 @@ package com.lifars.ioc.server.database.repository.sql
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.ProbeApiKey
 import com.lifars.ioc.server.database.entities.ProbeWithApiKey
-import com.lifars.ioc.server.database.repository.ProbeRepository
+import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.tables.sql.Probes
 import com.lifars.ioc.server.database.tables.sql.Users
 import org.jetbrains.exposed.dao.id.EntityID
@@ -54,13 +54,39 @@ class SqlProbeRepository(
         row[name] = entity.name
         row[owner] = EntityID(entity.owner, Users)
         row[apiKey] = entity.apiKey
-        row[registeredBy] = EntityID(entity.registeredBy,
+        row[registeredBy] = EntityID(
+            entity.registeredBy,
             Users
         )
     }
 
     override val table: Probes
         get() = Probes
+
+    override suspend fun findOwned(
+        pagination: Pagination,
+        filter: Filter?,
+        sort: Sort?,
+        reference: Reference?,
+        ownerId: Long
+    ): Page<ProbeWithApiKey> = database.query {
+        table.select(filter, reference) {
+            table.owner eq ownerId
+        }.orderBy(table, sort).mapPaged(pagination)
+    }
+
+    override suspend fun findByIdAndOwner(id: Long, ownerId: Long): ProbeWithApiKey? = database.query {
+        table
+            .select {
+                (table.id eq ownerId) and (table.owner eq ownerId)
+            }.mapSingle()
+    }
+
+    override suspend fun findByIdsAndOwner(ids: Iterable<Long>, ownerId: Long): List<ProbeWithApiKey> = database.query {
+        table.select {
+            (table.owner eq ownerId) and table.id.inList(ids)
+        }.mapAll()
+    }
 
 }
 

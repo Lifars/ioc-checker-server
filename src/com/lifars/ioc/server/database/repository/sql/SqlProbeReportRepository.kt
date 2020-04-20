@@ -2,14 +2,16 @@ package com.lifars.ioc.server.database.repository.sql
 
 import com.lifars.ioc.server.database.Database
 import com.lifars.ioc.server.database.entities.ProbeReport
-import com.lifars.ioc.server.database.repository.IocRepository
-import com.lifars.ioc.server.database.repository.ProbeReportRepository
+import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.tables.sql.FoundIocs
 import com.lifars.ioc.server.database.tables.sql.Iocs
 import com.lifars.ioc.server.database.tables.sql.ProbeReports
+import com.lifars.ioc.server.database.tables.sql.Probes
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.batchInsert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 class SqlProbeReportRepository(
@@ -22,7 +24,8 @@ class SqlProbeReportRepository(
 
     override suspend fun create(entity: ProbeReport): Long {
         val createdId = super.create(entity)
-        val createdIdWrapped = EntityID(createdId,
+        val createdIdWrapped = EntityID(
+            createdId,
             ProbeReports
         )
         database.query {
@@ -50,9 +53,43 @@ class SqlProbeReportRepository(
         row: UpdateBuilder<Number>,
         entity: ProbeReport
     ) {
-        row[probeId] = EntityID(entity.probeId,
+        row[probeId] = EntityID(
+            entity.probeId,
             ProbeReports
         )
         row[probeTimestamp] = entity.probeTimestamp
+    }
+
+    override suspend fun findOwned(
+        pagination: Pagination,
+        filter: Filter?,
+        sort: Sort?,
+        reference: Reference?,
+        ownerId: Long
+    ): Page<ProbeReport> = database.query {
+        table
+            .innerJoin(Probes)
+            .slice(table.columns)
+            .select(filter, reference) {
+                Probes.owner eq ownerId
+            }.orderBy(table, sort).mapPaged(pagination)
+    }
+
+    override suspend fun findByIdsAndOwner(ids: Iterable<Long>, ownerId: Long): List<ProbeReport> = database.query {
+        table
+            .innerJoin(Probes)
+            .slice(table.columns)
+            .select {
+                (Probes.owner eq ownerId) and table.id.inList(ids)
+            }.mapAll()
+    }
+
+    override suspend fun findByIdAndOwner(id: Long, ownerId: Long): ProbeReport? = database.query {
+        table
+            .innerJoin(Probes)
+            .slice(table.columns)
+            .select {
+                (table.id eq ownerId) and (Probes.owner eq ownerId)
+            }.mapSingle()
     }
 }

@@ -29,18 +29,24 @@ data class Filter(
     )
 }
 
-fun Table.select(filter: Filter?): Query = if (filter == null || filter.items.isEmpty())
-    this.selectAll()
+fun FieldSet.select(
+    filter: Filter?,
+    where: (SqlExpressionBuilder.() -> Op<Boolean>)? = null
+): Query = if (filter == null || filter.items.isEmpty())
+    if (where == null) this.selectAll() else this.select(where)
 else {
-    filter.buildExpression(this)
+    filter.buildExpression(this, where)
         .let { this.select(it) }
 }
 
-fun Filter.buildExpression(table: Table) =
+fun Filter.buildExpression(
+    table: FieldSet,
+    where: (SqlExpressionBuilder.() -> Op<Boolean>)? = null
+) =
     items
         .map { filterItem ->
             val columnName: String = if (filterItem.column == "id") "_id" else filterItem.column
-            val column = table.columns.first { it.name == columnName }
+            val column = table.source.columns.first { it.name == columnName }
             val columnType = column.columnType
 
             when(filterItem.value){
@@ -53,8 +59,10 @@ fun Filter.buildExpression(table: Table) =
                     EqOp(column, valueWrapped)
                 }
             }
-        }.let { AndOp(it) }
+        }.let { if (where == null) AndOp(it) else SqlExpressionBuilder.where() and AndOp(it) }
 
-
-
-
+operator fun Filter.plus(other: Filter?): Filter =
+    if(other == null)
+        this
+    else
+        this.copy(items = this.items + other.items)

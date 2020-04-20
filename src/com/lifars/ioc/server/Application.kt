@@ -46,7 +46,7 @@ fun Application.module(testing: Boolean = false) {
             authService = get()
         )
 
-        adminProbe(
+        probeFrontEnd(
             service = get()
         )
 
