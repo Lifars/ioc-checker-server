@@ -1,8 +1,8 @@
 package com.lifars.ioc.server.config
 
 import com.lifars.ioc.server.database.DatabaseInitializer
-import com.lifars.ioc.server.database.InitAdmin
 import com.lifars.ioc.server.database.InitProbe
+import com.lifars.ioc.server.database.InitUser
 import com.lifars.ioc.server.exceptions.AuthenticationException
 import com.lifars.ioc.server.exceptions.AuthorizationException
 import com.lifars.ioc.server.exceptions.UserAlreadyExistsException
@@ -120,9 +120,14 @@ private fun Application.fillDefaultDatabaseRows(parsedArgs: CommandLineArguments
         apiKey = parsedArgs.initAdminProbeKey!!
     )
     val initAdmin = if (parsedArgs.initAdminEmail == null) null
-    else InitAdmin(
+    else InitUser(
         email = parsedArgs.initAdminEmail!!,
         passwordPlain = parsedArgs.initAdminPass!!
+    )
+    val initUser = if (parsedArgs.initUserEmail == null) null
+    else InitUser(
+        email = parsedArgs.initUserEmail!!,
+        passwordPlain = parsedArgs.initUserPass!!
     )
 
     DatabaseInitializer(
@@ -131,6 +136,7 @@ private fun Application.fillDefaultDatabaseRows(parsedArgs: CommandLineArguments
         userPasswordHasher = get(userQualifier),
         probe = initProbe,
         admin = initAdmin,
+        normalUser = initUser,
         testIoc = parsedArgs.insertDummyIoc,
         registerFeedSources = parsedArgs.defaultIocFeeders
     ).initializeDatabase()

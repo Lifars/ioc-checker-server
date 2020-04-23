@@ -23,13 +23,17 @@ class JwtProvider(
 
     fun decodeJWT(token: String): DecodedJWT = JWT.require(algorighm).build().verify(token)
 
-    fun createJWT(email: String): String =
+    fun createJWT(
+        email: String,
+        roles: Array<String>
+    ): String =
         JWT.create()
             .withIssuedAt(Date())
             .withSubject("Authentication")
             .withIssuer(issuer)
             .withAudience(audience)
             .withClaim("email", email)
+            .withArrayClaim("permissions", roles)
             .withExpiresAt(Date(System.currentTimeMillis() + validityInMs))
             .sign(algorighm)
 }

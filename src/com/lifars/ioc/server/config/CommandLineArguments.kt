@@ -13,11 +13,37 @@ class CommandLineArguments(parser: ArgParser) {
         help = "Set admin password. Requires also --admin-email option"
     ).default<String?>(null)
 
+    val initUserEmail: String? by parser.storing(
+        "--user-email",
+        help = "Set normal user login email. Requires also --user-pass option"
+    ).default<String?>(null)
+    val initUserPass: String? by parser.storing(
+        "--user-pass",
+        help = "Set normal user password. Requires also --user-email option"
+    ).default<String?>(null)
+
+    val smtpServer: String? by parser.storing(
+        "--smtp-server",
+        help = "Set SMTP server for email sending."
+    ).default<String?>(null)
+    val smtpPort by parser.storing(
+        "--smtp-port",
+        help = "Set SMTP port. Default is 465"
+    ) { toInt() }.default(465)
+    val smtpUserEmail: String? by parser.storing(
+        "--smtp-user",
+        help = "Set email address to use for email sending."
+    ).default<String?>(null)
+    val smtpUserPassword: String? by parser.storing(
+        "--smtp-pass",
+        help = "Set email address password"
+    ).default<String?>(null)
+
+
     val initAdminProbeName: String? by parser.storing(
         "--probe-name",
         help = "Set initial probe name for admin. Requires also --probe-key option"
     ).default<String?>(null)
-
     val initAdminProbeKey: String? by parser.storing(
         "--probe-key",
         help = "Set initial probe api key for admin. Requires also --probe-name option"

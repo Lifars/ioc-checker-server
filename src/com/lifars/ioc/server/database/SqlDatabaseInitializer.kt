@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.*
 
 private val logger = KotlinLogging.logger { }
 
-data class InitAdmin(
+data class InitUser(
     val email: String,
     val passwordPlain: String
 )
@@ -27,7 +27,8 @@ data class DatabaseInitializer(
     private val database: Database,
     private val userPasswordHasher: PasswordHasher,
     private val probePasswordHasher: PasswordHasher,
-    private val admin: InitAdmin?,
+    private val admin: InitUser?,
+    private val normalUser: InitUser?,
     private val probe: InitProbe?,
     private val testIoc: Boolean,
     private val registerFeedSources: Boolean
@@ -42,6 +43,9 @@ data class DatabaseInitializer(
                     Users.role eq Users.Role.ADMIN
                 }.limit(1).firstOrNull()?.let { it[Users.id] } ?: throw AdminNotSetException()
             }
+
+            normalUser?.let { createNormalUser(normalUser) }
+
             logger.debug { "New admin with id $adminId created." }
             probe?.let {
                 createProbeForAdmin(probe, adminId)
@@ -133,7 +137,7 @@ data class DatabaseInitializer(
         }
     }
 
-    private fun createAdmin(admin: InitAdmin): EntityID<Long> {
+    private fun createAdmin(admin: InitUser): EntityID<Long> {
         Users.select {
             Users.role eq Users.Role.ADMIN
         }.limit(1)
@@ -153,6 +157,16 @@ data class DatabaseInitializer(
         }
     }
 
+    private fun createNormalUser(user: InitUser): EntityID<Long> {
+        return Users.insertAndGetId { row ->
+            row[role] = Users.Role.STANDARD
+            row[company] = ""
+            row[email] = user.email
+            row[name] = user.email.substringBefore("@")
+            row[username] = user.email.substringBefore("@")
+            row[password] = userPasswordHasher.hash(user.passwordPlain)
+        }
+    }
 }
 
 class AdminNotSetException :

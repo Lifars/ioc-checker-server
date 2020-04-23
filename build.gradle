@@ -71,7 +71,7 @@ dependencies {
 //    implementation "com.github.shyiko.skedule:skedule:$skedule_version"
     implementation "net.openhft:chronicle-map:$chroniclemap_version"
     implementation "org.passay:passay:$passay_version"
-
+    implementation "org.apache.commons:commons-email:$commons_email_version"
 
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 }

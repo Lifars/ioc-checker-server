@@ -4,7 +4,7 @@ import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 
 @KtorExperimentalLocationsAPI
-@Location("/api/admin")
+@Location("/api/fe")
 class FrontEndLocations {
     @Location("/list")
     class List {

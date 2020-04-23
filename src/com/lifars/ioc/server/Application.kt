@@ -50,23 +50,23 @@ fun Application.module(testing: Boolean = false) {
             service = get()
         )
 
-        adminIoc(
+        frontEndIoc(
             service = get()
         )
 
-        adminFoundIoc(
+        frontEndFoundIoc(
             service = get()
         )
 
-        adminProbeReport(
+        frontEndProbeReport(
             service = get()
         )
 
-        adminUser(
+        frontEndUser(
             service = get()
         )
 
-        adminFeedSource(
+        frontEndFeedSource(
             service = get()
         )
 
@@ -77,14 +77,15 @@ fun Application.module(testing: Boolean = false) {
             )
         }
 
-        authenticate(ADMIN_AUTH) {
+        authenticate(FRONTEND_AUTH) {
             get("/admin") {
                 call.respondText(
                     "Lifars IOC Server, version ${Ioc::class.java.`package`.implementationVersion
-                        ?: "NA"}\n\nThis is a restricted area. If you are not logged-in admin and see this message, then this app's security sucks and the programmer should be ashamed.",
+                        ?: "NA"}\n\nThis is a restricted area. If you are not logged-in and see this message, then this app's security sucks and the programmer should be ashamed.",
                     contentType = ContentType.Text.Plain
                 )
             }
         }
+
     }
 }

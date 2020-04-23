@@ -1,6 +1,5 @@
 package com.lifars.ioc.server.config
 
-import com.lifars.ioc.server.database.entities.UserWithPassword
 import com.lifars.ioc.server.database.repository.ProbeRepository
 import com.lifars.ioc.server.database.repository.UserRepository
 import com.lifars.ioc.server.security.JwtProvider
@@ -15,8 +14,7 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger { }
 
 const val PROBE_AUTH = "probeAuth"
-const val USER_AUTH = "userAuth"
-const val ADMIN_AUTH = "adminAuth"
+const val FRONTEND_AUTH = "frontendAuth"
 
 data class ProbePrincipal(val probeId: Long) : Principal
 
@@ -42,30 +40,29 @@ fun Authentication.Configuration.probeAuthentication(
 data class UserPrincipal(
     val id: Long,
     val email: String,
-    val token: String
-) : Principal
+    val token: String,
+    val roles: List<Role>
+) : Principal {
+    enum class Role{
+        STANDARD,
+        ADMIN
+    }
+}
 
 fun Authentication.Configuration.userAuthentication(
     userRepository: UserRepository,
     authRealm: String,
     jwtProvider: JwtProvider
 ) {
-    jwt(USER_AUTH) {
+    jwt(FRONTEND_AUTH) {
         jwtAuth(authRealm, jwtProvider, userRepository)
-    }
-
-    jwt(ADMIN_AUTH) {
-        jwtAuth(authRealm, jwtProvider, userRepository) { user ->
-            user.role == UserWithPassword.Role.ADMIN
-        }
     }
 }
 
 private fun JWTAuthenticationProvider.Configuration.jwtAuth(
     authRealm: String,
     jwtProvider: JwtProvider,
-    userRepository: UserRepository,
-    additionalUserConstraint: (user: UserWithPassword) -> Boolean = { true }
+    userRepository: UserRepository
 ) {
     realm = authRealm
     verifier(jwtProvider.verifier)
@@ -78,9 +75,7 @@ private fun JWTAuthenticationProvider.Configuration.jwtAuth(
 
         val user = userRepository.findByEmail(email) ?: return@validate null
 
-        if (additionalUserConstraint(user).not()) return@validate null
-
-        val token = jwtProvider.createJWT(email)
-        UserPrincipal(id = user.id, email = email, token = token)
+        val token = jwtProvider.createJWT(email, arrayOf(user.role.name))
+        UserPrincipal(id = user.id, email = email, token = token, roles = listOf(UserPrincipal.Role.valueOf(user.role.name)))
     }
 }
