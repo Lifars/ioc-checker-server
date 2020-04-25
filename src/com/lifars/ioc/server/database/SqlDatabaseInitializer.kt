@@ -14,8 +14,7 @@ import org.jetbrains.exposed.sql.*
 private val logger = KotlinLogging.logger { }
 
 data class InitUser(
-    val email: String,
-    val passwordPlain: String
+    val email: String
 )
 
 data class InitProbe(
@@ -25,10 +24,8 @@ data class InitProbe(
 
 data class DatabaseInitializer(
     private val database: Database,
-    private val userPasswordHasher: PasswordHasher,
     private val probePasswordHasher: PasswordHasher,
     private val admin: InitUser?,
-    private val normalUser: InitUser?,
     private val probe: InitProbe?,
     private val testIoc: Boolean,
     private val registerFeedSources: Boolean
@@ -40,11 +37,9 @@ data class DatabaseInitializer(
                 createAdmin(admin)
             } else {
                 Users.select {
-                    Users.role eq Users.Role.ADMIN
+                    Users.role eq Users.Role.SMURF_ADMIN
                 }.limit(1).firstOrNull()?.let { it[Users.id] } ?: throw AdminNotSetException()
             }
-
-            normalUser?.let { createNormalUser(normalUser) }
 
             logger.debug { "New admin with id $adminId created." }
             probe?.let {
@@ -139,7 +134,7 @@ data class DatabaseInitializer(
 
     private fun createAdmin(admin: InitUser): EntityID<Long> {
         Users.select {
-            Users.role eq Users.Role.ADMIN
+            Users.role eq Users.Role.SMURF_ADMIN
         }.limit(1)
             .firstOrNull()
             ?.let { it[Users.id] }
@@ -148,23 +143,15 @@ data class DatabaseInitializer(
             }
 
         return Users.insertAndGetId { row ->
-            row[role] = Users.Role.ADMIN
-            row[company] = ""
+            row[role] = Users.Role.SMURF_ADMIN
             row[email] = admin.email
-            row[name] = admin.email.substringBefore("@")
-            row[username] = admin.email.substringBefore("@")
-            row[password] = userPasswordHasher.hash(admin.passwordPlain)
         }
     }
 
     private fun createNormalUser(user: InitUser): EntityID<Long> {
         return Users.insertAndGetId { row ->
-            row[role] = Users.Role.STANDARD
-            row[company] = ""
+            row[role] = Users.Role.IOC_CHECKER
             row[email] = user.email
-            row[name] = user.email.substringBefore("@")
-            row[username] = user.email.substringBefore("@")
-            row[password] = userPasswordHasher.hash(user.passwordPlain)
         }
     }
 }

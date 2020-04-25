@@ -1,34 +1,16 @@
 package com.lifars.ioc.server.database.repository.sql
 
 import com.lifars.ioc.server.database.Database
-import com.lifars.ioc.server.database.entities.UserWithPassword
+import com.lifars.ioc.server.database.entities.User
 import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.tables.sql.Users
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 class SqlUserRepository(
     override val database: Database
-) : SqlCrudRepository<UserWithPassword, Users>, UserRepository {
-
-    override suspend fun findByUsername(username: String): UserWithPassword? = database.query {
-        table.select {
-            table.username eq username
-        }.limit(1)
-            .firstOrNull()
-            ?.let { it.toEntity() }
-    }
-
-    override suspend fun findByUsernameOrEmail(usernameOrEmail: String): UserWithPassword? = database.query {
-        table.select {
-            (table.email eq usernameOrEmail) or (table.username eq usernameOrEmail)
-        }.limit(1)
-            .firstOrNull()
-            ?.let { it.toEntity() }
-    }
-
+) : SqlCrudRepository<User, Users>, UserRepository {
 
     override suspend fun findByEmail(email: String) = database.query {
         table
@@ -38,18 +20,13 @@ class SqlUserRepository(
             ?.let { it.toEntity() }
     }
 
-    override suspend fun ResultRow.toEntity(): UserWithPassword = toUser()
+    override suspend fun ResultRow.toEntity(): User = toUser()
 
-    override fun Users.setFields(row: UpdateBuilder<Number>, entity: UserWithPassword) {
-        row[name] = entity.name
+    override fun Users.setFields(row: UpdateBuilder<Number>, entity: User) {
         row[updated] = entity.updated
         row[created] = entity.created
-        row[expires] = entity.expires
         row[email] = entity.email
-        row[company] = entity.company
-        row[username] = entity.username
         row[role] = entity.role.name.let { Users.Role.valueOf(it) }
-        row[password] = entity.password
     }
 
     override val table: Users
@@ -61,25 +38,20 @@ class SqlUserRepository(
         sort: Sort?,
         reference: Reference?,
         ownerId: Long
-    ): Page<UserWithPassword> =
+    ): Page<User> =
         find(pagination, filter, sort, reference)
 
-    override suspend fun findByIdAndOwner(id: Long, ownerId: Long): UserWithPassword? =
+    override suspend fun findByIdAndOwner(id: Long, ownerId: Long): User? =
         findById(id)
 
-    override suspend fun findByIdsAndOwner(ids: Iterable<Long>, ownerId: Long): List<UserWithPassword> =
+    override suspend fun findByIdsAndOwner(ids: Iterable<Long>, ownerId: Long): List<User> =
         findByIds(ids)
 }
 
-fun ResultRow.toUser() = UserWithPassword(
+fun ResultRow.toUser() = User(
     id = this[Users.id].value,
-    name = this[Users.name],
     updated = this[Users.updated],
     created = this[Users.created],
-    expires = this[Users.expires],
     email = this[Users.email],
-    company = this[Users.company],
-    username = this[Users.username],
-    role = this[Users.role].name.let { UserWithPassword.Role.valueOf(it) },
-    password = this[Users.password]
+    role = this[Users.role].name.let { User.Role.valueOf(it) }
 )

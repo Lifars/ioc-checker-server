@@ -1,51 +1,53 @@
 package com.lifars.ioc.server.service
 
-import com.lifars.ioc.server.database.entities.UserWithPassword
-import com.lifars.ioc.server.database.repository.CrudRepository
+import com.lifars.ioc.server.database.entities.User
 import com.lifars.ioc.server.database.repository.UserRepository
+import com.lifars.ioc.server.payload.Payload
 import com.lifars.ioc.server.payload.UserPayload
-import com.lifars.ioc.server.security.PasswordHasher
+import com.lifars.ioc.server.payload.toEntityRole
+import com.lifars.ioc.server.payload.toPayloadRole
+import java.lang.UnsupportedOperationException
 import java.time.Instant
 
 class UserService(
-    override val repository: UserRepository,
-    private val passwordHasher: PasswordHasher
-) : CrudService<UserWithPassword, UserPayload.User, UserPayload.SaveUserWithPassword> {
+    override val repository: UserRepository
+) : CrudService<User, UserPayload.User, UserPayload.User> {
 
-    override fun UserWithPassword.toDto() = UserPayload.User(
+    override fun User.toDto() = UserPayload.User(
         id = id,
         created = created,
         updated = updated,
-        expires = expires,
-        name = name,
-        company = company,
-        username = username,
-        role = UserPayload.Role.valueOf(role.name),
+        role = role.toPayloadRole(),
         email = email
     )
 
-    override fun UserWithPassword.toSavedDto() = UserPayload.SaveUserWithPassword(
-        id = id,
-        expires = expires,
-        name = name,
-        company = company,
-        username = username,
-        role = UserPayload.Role.valueOf(role.name),
-        email = email,
-        passwordPlain = "PASSWORD_PLACEHOLDER"
-    )
+    override fun User.toSavedDto() = toDto()
 
-    override fun UserPayload.SaveUserWithPassword.toSaveEntity() = UserWithPassword(
+    override fun UserPayload.User.toSaveEntity() = User(
         id = id,
-        expires = expires,
-        name = name,
-        company = company,
-        username = username,
-        role = UserWithPassword.Role.valueOf(role.name),
+        role = role.toEntityRole(),
         email = email,
-        password = passwordHasher.hash(passwordPlain),
         updated = Instant.now(),
         created = Instant.now()
     )
 
+    override suspend fun save(request: Payload.Request.Create<UserPayload.User>): Payload.Response.Create<UserPayload.User> {
+        throw NotImplementedError("Users cannot be modified")
+    }
+
+    override suspend fun save(request: Payload.Request.Update<UserPayload.User>): Payload.Response.Update<UserPayload.User> {
+        throw NotImplementedError("Users cannot be modified")
+    }
+
+    override suspend fun save(request: Payload.Request.UpdateMany<UserPayload.User>): Payload.Response.UpdateMany {
+        throw NotImplementedError("Users cannot be modified")
+    }
+
+    override suspend fun delete(request: Payload.Request.Delete): Payload.Response.Delete<UserPayload.User> {
+        throw NotImplementedError("Users cannot be modified")
+    }
+
+    override suspend fun delete(request: Payload.Request.DeleteMany): Payload.Response.DeleteMany {
+        throw NotImplementedError("Users cannot be modified")
+    }
 }

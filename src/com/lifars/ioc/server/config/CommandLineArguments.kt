@@ -8,19 +8,6 @@ class CommandLineArguments(parser: ArgParser) {
         "--admin-email",
         help = "Set admin login email. Requires also --admin-pass option"
     ).default<String?>(null)
-    val initAdminPass: String? by parser.storing(
-        "--admin-pass",
-        help = "Set admin password. Requires also --admin-email option"
-    ).default<String?>(null)
-
-    val initUserEmail: String? by parser.storing(
-        "--user-email",
-        help = "Set normal user login email. Requires also --user-pass option"
-    ).default<String?>(null)
-    val initUserPass: String? by parser.storing(
-        "--user-pass",
-        help = "Set normal user password. Requires also --user-email option"
-    ).default<String?>(null)
 
     val smtpServer: String? by parser.storing(
         "--smtp-server",
@@ -38,7 +25,6 @@ class CommandLineArguments(parser: ArgParser) {
         "--smtp-pass",
         help = "Set email address password"
     ).default<String?>(null)
-
 
     val initAdminProbeName: String? by parser.storing(
         "--probe-name",

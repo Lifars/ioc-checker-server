@@ -5,7 +5,6 @@ import com.lifars.ioc.server.database.repository.*
 import com.lifars.ioc.server.database.repository.keyvalue.KeyValueVisitedFeedUrlRepository
 import com.lifars.ioc.server.database.repository.sql.*
 import com.lifars.ioc.server.database.tables.keyvalue.VisitedFeeds
-import com.lifars.ioc.server.security.JwtProvider
 import com.lifars.ioc.server.security.PasswordHasher
 import com.lifars.ioc.server.serialization.additionalSetup
 import com.lifars.ioc.server.service.*
@@ -17,13 +16,14 @@ import io.ktor.config.ApplicationConfig
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
-import java.time.Duration
+import java.net.URL
 
 val probeQualifier = named("probeQualifier")
-val userQualifier = named("userQualifier")
+//val userQualifier = named("userQualifier")
 
 val probeRealm = named("probeRealm")
 val userRealm = named("userRealm")
+val jwkIssuer = named("jwkIssuer")
 
 fun mainDiModule(
     applicationConfig: ApplicationConfig
@@ -45,21 +45,13 @@ fun mainDiModule(
 
     single(probeQualifier) { PasswordHasher(applicationConfig.property("auth.probe.pepper").getString()) }
 
-    single(userQualifier) { PasswordHasher(applicationConfig.property("auth.user.pepper").getString()) }
+//    single(userQualifier) { PasswordHasher(applicationConfig.property("auth.user.pepper").getString()) }
 
     single(probeRealm) { applicationConfig.property("auth.probe.realm").getString() }
 
-    single(userRealm) { applicationConfig.property("auth.user.realm").getString() }
+    single(userRealm) { applicationConfig.property("auth.user.openId.realm").getString() }
 
-    single {
-        JwtProvider(
-            secret = applicationConfig.property("auth.user.jwt.secret").getString(),
-            audience = applicationConfig.property("auth.user.jwt.audience").getString(),
-            issuer = applicationConfig.property("auth.user.jwt.issuer").getString(),
-            timeout = applicationConfig.property("auth.user.jwt.timeout").getString().toLong()
-                .let { Duration.ofMinutes(it) }
-        )
-    }
+    single(jwkIssuer) { applicationConfig.property("auth.user.openId.jwkUrl").getString().let { URL(it) } }
 
     single<UserRepository> { SqlUserRepository(get()) }
 
@@ -94,14 +86,6 @@ fun mainDiModule(
     }
 
     single {
-        AuthService(
-            userRepository = get(),
-            jwtProvider = get(),
-            passwordHasher = get(userQualifier)
-        )
-    }
-
-    single {
         ProbeService(
             repository = get(),
             passwordHasher = get(probeQualifier),
@@ -111,8 +95,7 @@ fun mainDiModule(
 
     single {
         UserService(
-            repository = get(),
-            passwordHasher = get(userQualifier)
+            repository = get()
         )
     }
 

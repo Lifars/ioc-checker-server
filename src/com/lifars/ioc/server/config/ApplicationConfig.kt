@@ -76,7 +76,7 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
         userAuthentication(
             userRepository = get(),
             authRealm = get(userRealm),
-            jwtProvider = get()
+            jwkIssuer = get(jwkIssuer)
         )
     }
 
@@ -104,7 +104,7 @@ internal fun Application.configure(parsedArgs: CommandLineArguments) {
             throw cause
         }
         exception<UnsupportedOperationException> { cause ->
-            call.respond(HttpStatusCode.NotFound)
+            call.respond(HttpStatusCode.MethodNotAllowed)
             throw cause
         }
     }
@@ -121,22 +121,13 @@ private fun Application.fillDefaultDatabaseRows(parsedArgs: CommandLineArguments
     )
     val initAdmin = if (parsedArgs.initAdminEmail == null) null
     else InitUser(
-        email = parsedArgs.initAdminEmail!!,
-        passwordPlain = parsedArgs.initAdminPass!!
+        email = parsedArgs.initAdminEmail!!
     )
-    val initUser = if (parsedArgs.initUserEmail == null) null
-    else InitUser(
-        email = parsedArgs.initUserEmail!!,
-        passwordPlain = parsedArgs.initUserPass!!
-    )
-
     DatabaseInitializer(
         database = get(),
         probePasswordHasher = get(probeQualifier),
-        userPasswordHasher = get(userQualifier),
         probe = initProbe,
         admin = initAdmin,
-        normalUser = initUser,
         testIoc = parsedArgs.insertDummyIoc,
         registerFeedSources = parsedArgs.defaultIocFeeders
     ).initializeDatabase()

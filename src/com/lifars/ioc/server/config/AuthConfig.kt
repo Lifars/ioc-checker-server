@@ -1,15 +1,21 @@
 package com.lifars.ioc.server.config
 
+import com.auth0.jwk.JwkProviderBuilder
+import com.lifars.ioc.server.database.entities.User
 import com.lifars.ioc.server.database.repository.ProbeRepository
 import com.lifars.ioc.server.database.repository.UserRepository
-import com.lifars.ioc.server.security.JwtProvider
 import com.lifars.ioc.server.security.PasswordHasher
 import io.ktor.auth.Authentication
 import io.ktor.auth.Principal
 import io.ktor.auth.basic
 import io.ktor.auth.jwt.JWTAuthenticationProvider
 import io.ktor.auth.jwt.jwt
+import io.ktor.client.HttpClient
 import mu.KotlinLogging
+import java.net.URL
+import java.time.Instant
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger { }
 
@@ -39,43 +45,61 @@ fun Authentication.Configuration.probeAuthentication(
 
 data class UserPrincipal(
     val id: Long,
-    val email: String,
-    val token: String,
-    val roles: List<Role>
-) : Principal {
-    enum class Role{
-        STANDARD,
-        ADMIN
-    }
-}
+    val roles: List<User.Role>
+) : Principal
 
 fun Authentication.Configuration.userAuthentication(
     userRepository: UserRepository,
     authRealm: String,
-    jwtProvider: JwtProvider
+    jwkIssuer: URL
 ) {
+    val jwkProvider = JwkProviderBuilder(jwkIssuer)
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
     jwt(FRONTEND_AUTH) {
-        jwtAuth(authRealm, jwtProvider, userRepository)
-    }
-}
+        verifier(jwkProvider)
+        realm = authRealm
+        validate { credentials ->
+            val payload = credentials.payload
+            val expires = payload.expiresAt
+            if (Date() > expires) {
+                return@validate null
+            }
 
-private fun JWTAuthenticationProvider.Configuration.jwtAuth(
-    authRealm: String,
-    jwtProvider: JwtProvider,
-    userRepository: UserRepository
-) {
-    realm = authRealm
-    verifier(jwtProvider.verifier)
-    validate { credential ->
-        if (credential.payload.audience.contains(jwtProvider.audience).not())
-            return@validate null
+            val role = run roleHandler@{
+                val realmAccess = payload.getClaim("realm_access").asMap()
+                val rolesObject = realmAccess["roles"]
+                val rolesIterable = rolesObject as Iterable<*>
+                val roles = rolesIterable.filterIsInstance<String>()
 
-        val claim = "email"
-        val email = credential.payload.claims[claim]?.asString() ?: return@validate null
+                val adminRole = roles.any { it == User.Role.SMURF_ADMIN.name }
+                if(adminRole){
+                    return@roleHandler User.Role.SMURF_ADMIN
+                }
+                val userRole = roles.any { it == User.Role.IOC_CHECKER.name }
+                if(userRole){
+                    return@roleHandler User.Role.IOC_CHECKER
+                }else{
+                    null
+                }
+            } ?: return@validate null
 
-        val user = userRepository.findByEmail(email) ?: return@validate null
+            val email = payload.getClaim("email").asString() ?: return@validate null
+            val user = userRepository.findByEmail(email) ?: User(
+                id = -1,
+                email = email,
+                role = role,
+                created = Instant.now(),
+                updated = Instant.now()
+            )
+            val userInternalId = if(user.id > 0){
+                user.id
+            }else{
+                userRepository.create(user)
+            }
 
-        val token = jwtProvider.createJWT(email, arrayOf(user.role.name))
-        UserPrincipal(id = user.id, email = email, token = token, roles = listOf(UserPrincipal.Role.valueOf(user.role.name)))
+            UserPrincipal(id = userInternalId, roles = listOf(role))
+        }
     }
 }

@@ -42,10 +42,6 @@ fun Application.module(testing: Boolean = false) {
             iocService = get()
         )
 
-        userAuth(
-            authService = get()
-        )
-
         probeFrontEnd(
             service = get()
         )
