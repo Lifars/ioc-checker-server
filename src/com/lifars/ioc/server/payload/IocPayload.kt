@@ -51,8 +51,8 @@ object IocPayload {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class SaveIoc(
-        val id: Long,
-        val name: String,
+        val id: Long = 0,
+        val name: String = "",
         val definition: IocEntry
     )
 
